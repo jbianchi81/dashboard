@@ -1,14 +1,10 @@
-import { Inter } from "next/font/google";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Typography } from "@mui/material";
 
 export default function Home() {
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-    >
+    <main>
       <div>
-        <h1>Tablero de Monitoreo</h1>
+        <Typography>Tablero de Monitoreo</Typography>
       </div>
     </main>
   );

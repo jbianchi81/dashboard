@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>Dashboard</title>
       </Head>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </>
   );
 }
