@@ -19,12 +19,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { useRouter } from "next/router";
 
 const drawerWidth = 250;
 
 export default function ResponsiveDrawer() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const router = useRouter();
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -40,6 +42,19 @@ export default function ResponsiveDrawer() {
       setMobileOpen(!mobileOpen);
     }
   };
+
+  async function logOut() {
+    try {
+      const authRequest = await fetch("/api/auth/logout");
+      if (authRequest.status == 200) {
+        router.push("/login");
+      } else {
+        router.push("/error");
+      }
+    } catch (error: unknown) {
+      reportError(error as Error);
+    }
+  }
 
   const drawer = (
     <div
@@ -135,8 +150,7 @@ export default function ResponsiveDrawer() {
           </ListItem>
         </Link>
         <ListItem key={"logout"} disablePadding>
-          {/* <ListItemButton onClick={logOut}> */}
-          <ListItemButton>
+          <ListItemButton onClick={logOut}>
             <ListItemIcon>
               <LogoutIcon sx={{ fontSize: 25, color: "#EDEDED" }} />
               <ListItemText
