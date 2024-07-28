@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 
 const drawerWidth = 250;
 
-export default function ShortTerm() {
+export default function LongTerm() {
   return (
     <>
       <DrawerMenu />
@@ -16,7 +16,7 @@ export default function ShortTerm() {
           pl: 10,
         }}
       >
-        <h1>Pronóstico a Corto Plazo</h1>
+        <h1>Pronóstico a Largo Plazo</h1>
       </Box>
     </>
   );
