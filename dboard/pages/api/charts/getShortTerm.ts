@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import _ from "lodash";
-import moment from "moment";
 
 const token = process.env.token;
 
@@ -8,23 +7,30 @@ export default async function getShortTermData(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { type, seriesIdObs, calId, seriesIdSim } = req.body;
-  const fourDaysAgo = moment().subtract(4, "d").toISOString();
-  const now = moment().toISOString();
-  const fourDaysFromNow = moment().add(4, "d").toISOString();
+  const {
+    type,
+    seriesIdObs,
+    calId,
+    seriesIdSim,
+    timeStartObs,
+    timeEndObs,
+    timeStartSim,
+    timeEndSim,
+  } = req.body;
+
   try {
     const metaData = await getMetadata(type, seriesIdObs);
     const observations = await getObservations(
       type,
       seriesIdObs,
-      fourDaysAgo,
-      now
+      timeStartObs,
+      timeEndObs
     );
     const simulation = await getSimulation(
       calId,
       seriesIdSim,
-      fourDaysAgo,
-      fourDaysFromNow
+      timeStartSim,
+      timeEndSim
     );
     const response = assembleResponse(metaData, observations, simulation);
     res.status(200).json(response);
