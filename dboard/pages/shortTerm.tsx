@@ -2,11 +2,16 @@ import Alert from "@mui/material/Alert";
 import DrawerMenu from "../components/drawer";
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 const drawerWidth = 250;
 
 export default function ShortTerm() {
   const [error, setError] = useState(false);
+
+  const fourDaysAgo = moment().subtract(4, "d").toISOString();
+  const now = moment().toISOString();
+  const fourDaysFromNow = moment().add(4, "d").toISOString();
 
   async function getData() {
     const params = {
@@ -14,6 +19,10 @@ export default function ShortTerm() {
       seriesIdObs: "151",
       calId: "489",
       seriesIdSim: "3403",
+      timeStartObs: fourDaysAgo,
+      timeEndObs: now,
+      timeStartSim: fourDaysAgo,
+      timeEndSim: fourDaysFromNow,
     };
     const response = await fetch(`/api/charts/getShortTerm`, {
       method: "POST",
@@ -25,6 +34,7 @@ export default function ShortTerm() {
     });
     if (response.status == 200) {
       const result = await response.json();
+      console.log(result);
       return result;
     } else {
       setError(true);
