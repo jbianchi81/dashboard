@@ -2,21 +2,29 @@ import Alert from "@mui/material/Alert";
 import DrawerMenu from "../components/drawer";
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
+import moment from "moment";
 
 const drawerWidth = 250;
 
 export default function LongTerm() {
   const [error, setError] = useState(false);
 
+  const thirtyDaysAgo = moment().subtract(30, "d").toISOString();
+  const now = moment().toISOString();
+  const thirtyDaysFromNow = moment().add(30, "d").toISOString();
+
   async function getData() {
-    //TO DO check params
     const params = {
       type: "puntual",
       seriesIdObs: "151",
-      calId: "489",
-      seriesIdSim: "3403",
+      calId: "499",
+      seriesIdSim: "35471",
+      timeStartObs: thirtyDaysAgo,
+      timeEndObs: now,
+      timeStartSim: thirtyDaysAgo,
+      timeEndSim: thirtyDaysFromNow,
     };
-    const response = await fetch(`/api/charts/getLongTerm`, {
+    const response = await fetch(`/api/charts/getHydrometricForecast`, {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*",
@@ -26,6 +34,7 @@ export default function LongTerm() {
     });
     if (response.status == 200) {
       const result = await response.json();
+      console.log(result);
       return result;
     } else {
       setError(true);
