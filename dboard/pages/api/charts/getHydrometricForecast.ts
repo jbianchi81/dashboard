@@ -3,7 +3,7 @@ import _ from "lodash";
 
 const token = process.env.token;
 
-export default async function getShortTermData(
+export default async function getHydrometricForecast(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -83,7 +83,7 @@ function assembleResponse(
   metadata: MetadataResponse,
   observations: ObservationsResponse[],
   simulation: SimulationResponse
-) {
+): HydrometricForecastResponse {
   const estacion_: Estacion = {
     nombre: metadata.estacion.nombre,
     provincia: metadata.estacion.provincia,
@@ -106,7 +106,7 @@ function assembleResponse(
   const simulation_ = {
     series: simulation.series.map((s: SeriesItem) => createForecast(s)).flat(),
   };
-  const response: shortTermResponse = {
+  const response: HydrometricForecastResponse = {
     metadata: metadata_,
     observations: observations_,
     simulation: simulation_,
@@ -137,7 +137,7 @@ function createForecast(seriesItem: SeriesItem) {
   return ser;
 }
 
-type shortTermResponse = {
+type HydrometricForecastResponse = {
   metadata: MetadataResponse;
   observations: ObservationsResponse[];
   simulation: ModifSimulationResponse;

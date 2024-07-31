@@ -12,6 +12,7 @@ export default function Meteorological() {
   const fourDaysAgo = moment().subtract(4, "d").toISOString();
   const now = moment().toISOString();
   const fourDaysFromNow = moment().add(4, "d").toISOString();
+  const fifteenDaysFromNow = moment().add(15, "d").toISOString();
 
   async function getHydrometricHeightData() {
     const params = {
@@ -40,8 +41,34 @@ export default function Meteorological() {
     }
   }
 
+  async function getWindData() {
+    const params = {
+      type: "puntual",
+      estacionId: "1740",
+      seriesIdWindVel: "35478",
+      seriesIdWindDir: "35479",
+      timeStart: fourDaysAgo,
+      timeEnd: fifteenDaysFromNow,
+    };
+    const response = await fetch(`/api/charts/getWindForecast`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json, text/plain, */*",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(params),
+    });
+    if (response.status == 200) {
+      const result = await response.json();
+      return result;
+    } else {
+      setError(true);
+    }
+  }
+
   useEffect(() => {
     getHydrometricHeightData();
+    getWindData();
   }, []);
 
   return (
