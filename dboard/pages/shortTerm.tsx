@@ -24,7 +24,7 @@ export default function ShortTerm() {
       timeStartSim: fourDaysAgo,
       timeEndSim: fourDaysFromNow,
     };
-    const response = await fetch(`/api/charts/getShortTerm`, {
+    const response = await fetch(`/api/charts/getHydrometricForecast`, {
       method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*",

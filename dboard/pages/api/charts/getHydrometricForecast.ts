@@ -124,11 +124,16 @@ function createObs(observation: ObservationsResponse) {
 }
 
 function createForecast(seriesItem: SeriesItem) {
+  seriesItem.series_id;
   const pronosticos = seriesItem.pronosticos.map((p) => {
     const r: Forecast = { time: p[0], value: p[2], qualifier: p[3] };
     return r;
   });
-  const ser: ModifSeriesItem = { pronosticos };
+  const ser: ModifSeriesItem = {
+    series_id: seriesItem.series_id,
+    qualifier: seriesItem.qualifier,
+    pronosticos: pronosticos,
+  };
   return ser;
 }
 
@@ -158,6 +163,8 @@ type ModifSimulationResponse = {
 };
 
 type ModifSeriesItem = {
+  series_id: number;
+  qualifier: string;
   pronosticos: Forecast[];
 };
 
