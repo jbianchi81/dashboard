@@ -13,7 +13,7 @@ export default function LongTerm() {
   const now = moment().toISOString();
   const thirtyDaysFromNow = moment().add(30, "d").toISOString();
 
-  async function getData() {
+  async function getHydrometricHeightData() {
     const params = {
       type: "puntual",
       seriesIdObs: "151",
@@ -34,7 +34,6 @@ export default function LongTerm() {
     });
     if (response.status == 200) {
       const result = await response.json();
-      console.log(result);
       return result;
     } else {
       setError(true);
@@ -42,7 +41,7 @@ export default function LongTerm() {
   }
 
   useEffect(() => {
-    getData();
+    getHydrometricHeightData();
   }, []);
 
   return (

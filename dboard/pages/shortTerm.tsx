@@ -13,7 +13,7 @@ export default function ShortTerm() {
   const now = moment().toISOString();
   const fourDaysFromNow = moment().add(4, "d").toISOString();
 
-  async function getData() {
+  async function getHydrometricHeightData() {
     const params = {
       type: "puntual",
       seriesIdObs: "151",
@@ -41,7 +41,7 @@ export default function ShortTerm() {
   }
 
   useEffect(() => {
-    getData();
+    getHydrometricHeightData();
   }, []);
 
   return (
