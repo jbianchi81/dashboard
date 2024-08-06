@@ -8,6 +8,8 @@ const drawerWidth = 250;
 
 export default function ShortTerm() {
   const [error, setError] = useState(false);
+  const [data, setData] = useState([]);
+  const [obs, setObs] = useState([]);
 
   const fourDaysAgo = moment().subtract(4, "d").toISOString();
   const now = moment().toISOString();
@@ -41,8 +43,22 @@ export default function ShortTerm() {
   }
 
   useEffect(() => {
-    getHydrometricHeightData();
+    async function fetchData() {
+      let result = await getHydrometricHeightData();
+      setData(result);
+      setObs(createObs(result["observations"]));
+    }
+    fetchData();
   }, []);
+
+  function createObs(observations: []) {
+    const data: any = [];
+    observations.map((o: any) => {
+      const d = { name: o[0], value: o[1] };
+      data.push(d);
+    });
+    return data;
+  }
 
   return (
     <>
@@ -50,6 +66,7 @@ export default function ShortTerm() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: "column",
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
           pr: 10,
