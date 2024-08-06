@@ -1,5 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import _ from "lodash";
+import Metadata from "@/lib/domain/metadata";
+import Station from "@/lib/domain/station";
+import Var from "@/lib/domain/var";
+import Units from "@/lib/domain/units";
 
 const token = process.env.token;
 
@@ -42,10 +46,7 @@ export default async function getHydrometricForecast(
   }
 }
 
-async function getMetadata(
-  type: string,
-  seriesId: string
-): Promise<MetadataResponse> {
+async function getMetadata(type: string, seriesId: string): Promise<Metadata> {
   const metaDataUrl = `https://alerta.ina.gob.ar/a6/obs/${type}/series/${seriesId}`;
   const response = await fetch(metaDataUrl, {
     headers: { Authorization: `Bearer ${token}` },
@@ -80,11 +81,11 @@ async function getSimulation(
 }
 
 function assembleResponse(
-  metadata: MetadataResponse,
+  metadata: Metadata,
   observations: ObservationsResponse[],
   simulation: SimulationResponse
 ): HydrometricForecastResponse {
-  const estacion_: Estacion = {
+  const estacion_: Station = {
     nombre: metadata.estacion.nombre,
     provincia: metadata.estacion.provincia,
     rio: metadata.estacion.rio,
@@ -92,10 +93,10 @@ function assembleResponse(
   const var_: Var = {
     nombre: metadata.var.nombre,
   };
-  const unidades_: Unidades = {
+  const unidades_: Units = {
     nombre: metadata.unidades.nombre,
   };
-  const metadata_: MetadataResponse = {
+  const metadata_: Metadata = {
     estacion: estacion_,
     var: var_,
     unidades: unidades_,
@@ -138,7 +139,7 @@ function createForecast(seriesItem: SeriesItem) {
 }
 
 type HydrometricForecastResponse = {
-  metadata: MetadataResponse;
+  metadata: Metadata;
   observations: ObservationsResponse[];
   simulation: ModifSimulationResponse;
 };
@@ -172,24 +173,4 @@ type Forecast = {
   time: string;
   value: string;
   qualifier: string;
-};
-
-type MetadataResponse = {
-  estacion: Estacion;
-  var: Var;
-  unidades: Unidades;
-};
-
-type Estacion = {
-  nombre: string;
-  provincia: string;
-  rio: string;
-};
-
-type Var = {
-  nombre: string;
-};
-
-type Unidades = {
-  nombre: string;
 };
