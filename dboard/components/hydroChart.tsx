@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import moment from "moment";
 import {
   Area,
   Label,
@@ -14,15 +15,15 @@ import {
 } from "recharts";
 
 export type HydroEntry = {
-  date: string;
+  date: number;
   observed: number | null;
   estimated: number;
   error_band: [number, number];
 };
 
 const getAxisYDomain = (
-  from: string,
-  to: string,
+  from: number,
+  to: number,
   ref: string,
   offset: number,
   data: HydroEntry[]
@@ -123,9 +124,7 @@ export class HydroChart extends Component<HydroChartProps> {
       left: "dataMin",
       right: "dataMax",
       top: "dataMax+1",
-      bottom: "dataMin",
-      top2: "dataMax+50",
-      bottom2: "dataMin+50",
+      bottom: "dataMin-1",
     }));
   }
 
@@ -169,7 +168,14 @@ export class HydroChart extends Component<HydroChartProps> {
             onMouseUp={this.zoom.bind(this)}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis allowDataOverflow dataKey="date" domain={[left, right]} />
+            <XAxis
+              allowDataOverflow
+              dataKey="date"
+              domain={[left, right]}
+              tickCount={6}
+              tickFormatter={(unixTime) => new Date(unixTime).toISOString()}
+              type="number"
+            />
             <Area
               type="monotone"
               dataKey="error_band"

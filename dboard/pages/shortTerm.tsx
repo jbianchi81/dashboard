@@ -58,7 +58,9 @@ export default function ShortTerm() {
             ? result["observations"][i].valor
             : null;
           let entry: HydroEntry = {
-            date: result["simulation"]["series"][0].pronosticos[i].time,
+            date: new Date(
+              result["simulation"]["series"][0].pronosticos[i].time
+            ).getTime(),
             observed: obs !== null ? parseFloat(obs) : null,
             estimated: parseFloat(
               result["simulation"]["series"][2].pronosticos[i].value
