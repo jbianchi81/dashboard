@@ -1,8 +1,8 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import {
   Area,
   Label,
-  LineChart,
+  Scatter,
   Line,
   CartesianGrid,
   XAxis,
@@ -13,17 +13,24 @@ import {
   ComposedChart,
 } from "recharts";
 
-const initialData = [
-  { name: 1, cost: 4.11, impression: 100, a: [95, 110] },
-  { name: 2, cost: 2.39, impression: 120, a: [98, 125] },
-  { name: 3, cost: 1.37, impression: 150, a: [140, 160] },
-  { name: 4, cost: 1.16, impression: 180, a: [175, 200] },
-  { name: 5, cost: 2.29, impression: 200, a: [190, 210] },
-  { name: 6, cost: 3, impression: 499, a: [450, 550] },
-];
+export type HydroEntry = {
+  date: string;
+  observed: number | null;
+  estimated: number;
+  error_band: [number, number];
+};
 
-const getAxisYDomain = (from, to, ref, offset) => {
-  const refData = initialData.slice(from - 1, to);
+const getAxisYDomain = (
+  from: string,
+  to: string,
+  ref: string,
+  offset: number,
+  data: HydroEntry[]
+) => {
+  const refData = data.filter(
+    (entry) => entry.date >= from && entry.date <= to
+  );
+
   let [bottom, top] = [refData[0][ref], refData[0][ref]];
   refData.forEach((d) => {
     if (d[ref] > top) top = d[ref];
@@ -33,31 +40,40 @@ const getAxisYDomain = (from, to, ref, offset) => {
   return [(bottom | 0) - offset, (top | 0) + offset];
 };
 
-const initialState = {
-  data: initialData,
+interface GraphState {
+  data: HydroEntry[];
+  left: string;
+  right: string;
+  refAreaLeft: string;
+  refAreaRight: string;
+  top: string;
+  bottom: string;
+  animation: boolean;
+}
+
+const initialState: GraphState = {
+  data: [],
   left: "dataMin",
   right: "dataMax",
   refAreaLeft: "",
   refAreaRight: "",
   top: "dataMax+1",
   bottom: "dataMin-1",
-  top2: "dataMax+20",
-  bottom2: "dataMin-20",
   animation: true,
 };
 
 interface HydroChartProps {
   message: string;
+  data: HydroEntry[];
 }
 
-export default class HydroChart extends PureComponent<HydroChartProps> {
-  static demoUrl =
-    "https://codesandbox.io/p/sandbox/highlight-zoom-line-chart-rrj8f4";
+export class HydroChart extends Component<HydroChartProps> {
+  state: GraphState;
 
   constructor(props: HydroChartProps) {
     super(props);
-    console.log(props);
     this.state = initialState;
+    this.state.data = props.data;
   }
 
   zoom() {
@@ -73,18 +89,20 @@ export default class HydroChart extends PureComponent<HydroChartProps> {
     }
 
     // xAxis domain
-    if (refAreaLeft > refAreaRight)
+    if (refAreaLeft && refAreaLeft > refAreaRight)
       [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
 
+    console.log("refAreaLeft", refAreaLeft);
+    console.log("refAreaRight", refAreaRight);
+
     // yAxis domain
-    const [bottom, top] = getAxisYDomain(refAreaLeft, refAreaRight, "cost", 1);
-    const [bottom2, top2] = getAxisYDomain(
+    const [bottom, top] = getAxisYDomain(
       refAreaLeft,
       refAreaRight,
-      "impression",
-      50
+      "estimated",
+      1,
+      data
     );
-
     this.setState(() => ({
       refAreaLeft: "",
       refAreaRight: "",
@@ -93,8 +111,6 @@ export default class HydroChart extends PureComponent<HydroChartProps> {
       right: refAreaRight,
       bottom,
       top,
-      bottom2,
-      top2,
     }));
   }
 
@@ -123,9 +139,9 @@ export default class HydroChart extends PureComponent<HydroChartProps> {
       refAreaRight,
       top,
       bottom,
-      top2,
-      bottom2,
     } = this.state;
+
+    console.log("render", refAreaLeft, refAreaRight, left, right);
 
     return (
       <div
@@ -153,21 +169,16 @@ export default class HydroChart extends PureComponent<HydroChartProps> {
             onMouseUp={this.zoom.bind(this)}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              allowDataOverflow
-              dataKey="name"
-              domain={[left, right]}
-              type="number"
-            />
+            <XAxis allowDataOverflow dataKey="date" domain={[left, right]} />
             <Area
               type="monotone"
-              dataKey="a"
+              dataKey="error_band"
               stroke="none"
-              fill="#aaffaa"
+              fill="#A7D8DE"
               connectNulls
               dot={false}
               activeDot={false}
-              yAxisId="2"
+              yAxisId="1"
             />
             <YAxis
               allowDataOverflow
@@ -175,40 +186,58 @@ export default class HydroChart extends PureComponent<HydroChartProps> {
               type="number"
               yAxisId="1"
             />
-            <YAxis
+            {/* <YAxis
               orientation="right"
               allowDataOverflow
               domain={[bottom2, top2]}
               type="number"
               yAxisId="2"
-            />
+            /> */}
             <Tooltip />
             <Line
               yAxisId="1"
-              type="natural"
-              dataKey="cost"
-              stroke="#8884d8"
+              type="monotone"
+              dot={false}
+              dataKey="estimated"
+              stroke="#31768D"
               animationDuration={300}
             />
-            <Line
+            <Scatter
+              yAxisId="1"
+              width={1}
+              type="monotone"
+              dataKey="observed"
+              stroke="#aaa"
+              animationDuration={300}
+            />
+            {/* <Line
               yAxisId="2"
               type="natural"
               dataKey="impression"
               stroke="#82ca9d"
               animationDuration={300}
-            />
+            /> */}
 
             {refAreaLeft && refAreaRight ? (
               <ReferenceArea
                 yAxisId="1"
                 x1={refAreaLeft}
                 x2={refAreaRight}
-                strokeOpacity={0.3}
+                strokeOpacity={0.2}
               />
             ) : null}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
     );
+  }
+
+  shouldComponentUpdate(
+    nextProps: Readonly<HydroChartProps>,
+    nextState: Readonly<{}>,
+    nextContext: any
+  ): boolean {
+    this.state.data = nextProps.data;
+    return true;
   }
 }
