@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import moment from "moment";
 import {
   Area,
-  Label,
+  Legend,
   Scatter,
   Line,
   CartesianGrid,
@@ -24,7 +23,6 @@ export type HydroEntry = {
 const getAxisYDomain = (
   from: number,
   to: number,
-  ref: string,
   offset: number,
   data: HydroEntry[]
 ) => {
@@ -32,10 +30,15 @@ const getAxisYDomain = (
     (entry) => entry.date >= from && entry.date <= to
   );
 
-  let [bottom, top] = [refData[0][ref], refData[0][ref]];
+  let [bottom, top] = [
+    refData[0]["error_band"][0],
+    refData[0]["error_band"][1],
+  ];
+
   refData.forEach((d) => {
-    if (d[ref] > top) top = d[ref];
-    if (d[ref] < bottom) bottom = d[ref];
+    var ref: keyof HydroEntry = "error_band";
+    if (d[ref][1] > top) top = d[ref][1];
+    if (d[ref][0] < bottom) bottom = d[ref][0];
   });
 
   return [(bottom | 0) - offset, (top | 0) + offset];
@@ -45,8 +48,8 @@ interface GraphState {
   data: HydroEntry[];
   left: string;
   right: string;
-  refAreaLeft: string;
-  refAreaRight: string;
+  refAreaLeft: number | "";
+  refAreaRight: number | "";
   top: string;
   bottom: string;
   animation: boolean;
@@ -64,7 +67,6 @@ const initialState: GraphState = {
 };
 
 interface HydroChartProps {
-  message: string;
   data: HydroEntry[];
 }
 
@@ -81,7 +83,11 @@ export class HydroChart extends Component<HydroChartProps> {
     let { refAreaLeft, refAreaRight } = this.state;
     const { data } = this.state;
 
-    if (refAreaLeft === refAreaRight || refAreaRight === "") {
+    if (
+      refAreaLeft === refAreaRight ||
+      refAreaRight === "" ||
+      refAreaLeft === ""
+    ) {
       this.setState(() => ({
         refAreaLeft: "",
         refAreaRight: "",
@@ -93,17 +99,8 @@ export class HydroChart extends Component<HydroChartProps> {
     if (refAreaLeft && refAreaLeft > refAreaRight)
       [refAreaLeft, refAreaRight] = [refAreaRight, refAreaLeft];
 
-    console.log("refAreaLeft", refAreaLeft);
-    console.log("refAreaRight", refAreaRight);
-
     // yAxis domain
-    const [bottom, top] = getAxisYDomain(
-      refAreaLeft,
-      refAreaRight,
-      "estimated",
-      1,
-      data
-    );
+    const [bottom, top] = getAxisYDomain(refAreaLeft, refAreaRight, 1, data);
     this.setState(() => ({
       refAreaLeft: "",
       refAreaRight: "",
@@ -129,18 +126,8 @@ export class HydroChart extends Component<HydroChartProps> {
   }
 
   render() {
-    const {
-      data,
-      barIndex,
-      left,
-      right,
-      refAreaLeft,
-      refAreaRight,
-      top,
-      bottom,
-    } = this.state;
-
-    console.log("render", refAreaLeft, refAreaRight, left, right);
+    const { data, left, right, refAreaLeft, refAreaRight, top, bottom } =
+      this.state;
 
     return (
       <div
@@ -155,10 +142,9 @@ export class HydroChart extends Component<HydroChartProps> {
           Alejar
         </button>
 
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={600}>
           <ComposedChart
-            width={800}
-            height={400}
+            margin={{ right: 10, left: 20 }}
             data={data}
             onMouseDown={(e) => this.setState({ refAreaLeft: e.activeLabel })}
             onMouseMove={(e) =>
@@ -172,40 +158,60 @@ export class HydroChart extends Component<HydroChartProps> {
               allowDataOverflow
               dataKey="date"
               domain={[left, right]}
-              tickCount={6}
-              tickFormatter={(unixTime) => new Date(unixTime).toISOString()}
+              tickCount={10}
+              tickFormatter={(unixTime) =>
+                new Date(unixTime).toLocaleDateString("en-GB")
+              }
               type="number"
             />
             <Area
               type="monotone"
               dataKey="error_band"
               stroke="none"
+              name="Banda de error"
               fill="#A7D8DE"
               connectNulls
               dot={false}
               activeDot={false}
               yAxisId="1"
+              animationDuration={300}
             />
             <YAxis
               allowDataOverflow
               domain={[bottom, top]}
               type="number"
               yAxisId="1"
+              label={{
+                value: "Nivel (m)",
+                angle: -90,
+                position: "insideLeft",
+              }}
+              tickCount={10}
+              tickFormatter={(tick) => {
+                return tick.toFixed(1);
+              }}
             />
-            {/* <YAxis
-              orientation="right"
-              allowDataOverflow
-              domain={[bottom2, top2]}
-              type="number"
-              yAxisId="2"
-            /> */}
-            <Tooltip />
+            <Tooltip
+              labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
+            />
+            <Legend
+              width={170}
+              layout="vertical"
+              wrapperStyle={{
+                top: 10,
+                right: 20,
+                backgroundColor: "#f5f5f5",
+                border: "1px solid #d5d5d5",
+                borderRadius: 3,
+              }}
+            />
             <Line
               yAxisId="1"
               type="monotone"
               dot={false}
               dataKey="estimated"
-              stroke="#31768D"
+              name="Nivel pronosticado"
+              stroke="#01599b"
               animationDuration={300}
             />
             <Scatter
@@ -213,17 +219,10 @@ export class HydroChart extends Component<HydroChartProps> {
               width={1}
               type="monotone"
               dataKey="observed"
+              name="Nivel observado"
               stroke="#aaa"
               animationDuration={300}
             />
-            {/* <Line
-              yAxisId="2"
-              type="natural"
-              dataKey="impression"
-              stroke="#82ca9d"
-              animationDuration={300}
-            /> */}
-
             {refAreaLeft && refAreaRight ? (
               <ReferenceArea
                 yAxisId="1"

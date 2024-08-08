@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { HydroChart, HydroEntry } from "../components/hydroChart";
+import { Typography } from "@mui/material";
 
 const drawerWidth = 250;
 
@@ -95,8 +96,17 @@ export default function ShortTerm() {
           pl: 10,
         }}
       >
-        <h1>Pronóstico a Corto Plazo</h1>
-        <HydroChart message={"test"} data={data}></HydroChart>
+        <Typography variant="h4" sx={{ ml: 5 }}>
+          Pronóstico a Corto Plazo
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            m: 5,
+          }}
+        >
+          <HydroChart data={data}></HydroChart>
+        </Box>
       </Box>
       {error && (
         <Box
