@@ -13,12 +13,47 @@ import {
   ComposedChart,
 } from "recharts";
 
+import _ from "lodash";
+
 export type HydroEntry = {
   date: number;
   observed: number | null;
-  estimated: number;
-  error_band: [number, number];
+  estimated: number | null;
+  error_band: [number, number] | null;
 };
+
+type Estimation = { time: string; value: number };
+type Observation = { timestart: string; valor: number };
+
+export function buildHydroEntries(
+  estimated: Estimation[],
+  observations: Observation[],
+  low_band: Estimation[],
+  high_band: Estimation[]
+): HydroEntry[] {
+  const est = _.groupBy(estimated, "time");
+  const obs = _.groupBy(observations, "timestart");
+  const lo = _.groupBy(low_band, "time");
+  const hi = _.groupBy(high_band, "time");
+  const [a, b, c, d] = [
+    new Set(Object.keys(est)),
+    new Set(Object.keys(lo)),
+    new Set(Object.keys(hi)),
+    new Set(Object.keys(obs)),
+  ];
+  const allDates = a.union(b).union(c).union(d);
+  let entries: HydroEntry[] = [];
+  for (let date of allDates) {
+    let entry: HydroEntry = {
+      date: new Date(date).getTime(),
+      observed: obs[date]?.[0]?.valor || null,
+      estimated: est[date]?.[0]?.value || null,
+      error_band: [lo[date]?.[0]?.value, hi[date]?.[0]?.value],
+    };
+    entries.push(entry);
+  }
+  return entries;
+}
 
 const getAxisYDomain = (
   from: number,
@@ -31,14 +66,14 @@ const getAxisYDomain = (
   );
 
   let [bottom, top] = [
-    refData[0]["error_band"][0],
-    refData[0]["error_band"][1],
+    refData[0]["error_band"]?.[0],
+    refData[0]["error_band"]?.[1],
   ];
 
   refData.forEach((d) => {
     var ref: keyof HydroEntry = "error_band";
-    if (d[ref][1] > top) top = d[ref][1];
-    if (d[ref][0] < bottom) bottom = d[ref][0];
+    if (d[ref][1] > top) top = d[ref]?.[1];
+    if (d[ref][0] < bottom) bottom = d[ref]?.[0];
   });
 
   return [(bottom | 0) - offset, (top | 0) + offset];
