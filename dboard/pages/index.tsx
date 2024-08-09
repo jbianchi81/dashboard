@@ -5,8 +5,32 @@ import DrawerMenu from "../components/drawer";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import { parseCookies } from "nookies";
+import { GetServerSidePropsContext } from "next";
 
 const drawerWidth = 250;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const cookies = parseCookies(context);
+  const sessionToken = cookies.session;
+
+  if (!sessionToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session: sessionToken,
+    },
+  };
+};
 
 export default function Home() {
   return (
