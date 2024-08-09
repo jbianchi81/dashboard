@@ -5,8 +5,32 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import { HydroChart, HydroEntry } from "../components/hydroChart";
 import { Typography } from "@mui/material";
+import { parseCookies } from "nookies";
+import { GetServerSidePropsContext } from "next";
 
 const drawerWidth = 250;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const cookies = parseCookies(context);
+  const sessionToken = cookies.session;
+
+  if (!sessionToken) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session: sessionToken,
+    },
+  };
+};
 
 export default function ShortTerm() {
   const [error, setError] = useState(false);
