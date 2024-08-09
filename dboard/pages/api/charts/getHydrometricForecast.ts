@@ -22,27 +22,33 @@ export default async function getHydrometricForecast(
     timeEndSim,
   } = req.body;
 
-  try {
-    const metaData = await getMetadata(type, seriesIdObs);
-    const observations = await getObservations(
-      type,
-      seriesIdObs,
-      timeStartObs,
-      timeEndObs
-    );
-    const simulation = await getSimulation(
-      calId,
-      seriesIdSim,
-      timeStartSim,
-      timeEndSim
-    );
-    const response = assembleResponse(metaData, observations, simulation);
-    res.status(200).json(response);
-  } catch (error: unknown) {
-    console.error(error);
-    res.status(500);
-  } finally {
-    res.end();
+  const sessionToken = req.cookies.session;
+
+  if (!sessionToken) {
+    res.status(401).json({ error: "Unauthorized" });
+  } else {
+    try {
+      const metaData = await getMetadata(type, seriesIdObs);
+      const observations = await getObservations(
+        type,
+        seriesIdObs,
+        timeStartObs,
+        timeEndObs
+      );
+      const simulation = await getSimulation(
+        calId,
+        seriesIdSim,
+        timeStartSim,
+        timeEndSim
+      );
+      const response = assembleResponse(metaData, observations, simulation);
+      res.status(200).json(response);
+    } catch (error: unknown) {
+      console.error(error);
+      res.status(500);
+    } finally {
+      res.end();
+    }
   }
 }
 
