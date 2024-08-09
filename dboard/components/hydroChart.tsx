@@ -66,14 +66,17 @@ const getAxisYDomain = (
   );
 
   let [bottom, top] = [
-    refData[0]["error_band"]?.[0],
-    refData[0]["error_band"]?.[1],
+    refData[0]["error_band"]?.[0] || 0,
+    refData[0]["error_band"]?.[1] || 0,
   ];
-
   refData.forEach((d) => {
-    var ref: keyof HydroEntry = "error_band";
-    if (d[ref][1] > top) top = d[ref]?.[1];
-    if (d[ref][0] < bottom) bottom = d[ref]?.[0];
+    let ref: keyof HydroEntry = "error_band";
+    if (d[ref]?.[1] && d[ref][1] > top) {
+      top = d[ref][1];
+    }
+    if (d[ref]?.[0] && d[ref][0] < bottom) {
+      bottom = d[ref][0];
+    }
   });
 
   return [(bottom | 0) - offset, (top | 0) + offset];
