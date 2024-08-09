@@ -49,6 +49,7 @@ export default function Login() {
         body: JSON.stringify(data),
       });
       if (authRequest.status == 200) {
+        setAuthError(false);
         router.push("/");
       } else {
         setAuthError(true);
