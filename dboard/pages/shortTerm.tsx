@@ -3,7 +3,11 @@ import DrawerMenu from "../components/drawer";
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { HydroChart, HydroEntry } from "../components/hydroChart";
+import {
+  HydroChart,
+  HydroEntry,
+  buildHydroEntries,
+} from "../components/hydroChart";
 import { Typography } from "@mui/material";
 
 const drawerWidth = 250;
@@ -51,34 +55,16 @@ export default function ShortTerm() {
   useEffect(() => {
     async function fetchData() {
       const result = await getHydrometricHeightData();
-      if (result) {
-        let total = result["simulation"]["series"][0].pronosticos.length;
-        let entries: HydroEntry[] = [];
-        for (let i = 0; i < total; i++) {
-          let obs = result["observations"][i]
-            ? result["observations"][i].valor
-            : null;
-          let entry: HydroEntry = {
-            date: new Date(
-              result["simulation"]["series"][0].pronosticos[i].time
-            ).getTime(),
-            observed: obs !== null ? parseFloat(obs) : null,
-            estimated: parseFloat(
-              result["simulation"]["series"][2].pronosticos[i].value
-            ),
-            error_band: [
-              parseFloat(
-                result["simulation"]["series"][0].pronosticos[i].value
-              ),
-              parseFloat(
-                result["simulation"]["series"][1].pronosticos[i].value
-              ),
-            ],
-          };
-          entries.push(entry);
-        }
-        setData(entries);
+      if (!result) {
+        return;
       }
+      const entries = buildHydroEntries(
+        result.simulation.series[2].pronosticos,
+        result.observations,
+        result.simulation.series[0].pronosticos,
+        result.simulation.series[1].pronosticos
+      );
+      setData(entries);
     }
     fetchData();
   }, []);
