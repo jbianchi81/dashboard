@@ -42,18 +42,17 @@ export default function LongTerm() {
 
   const thirtyDaysAgo = moment().subtract(30, "d").toISOString();
   const now = moment().toISOString();
-  const thirtyDaysFromNow = moment().add(30, "d").toISOString();
 
   async function getHydrometricHeightData() {
     const params = {
       type: "puntual",
       seriesIdObs: "151",
       calId: "499",
-      seriesIdSim: "35471",
+      seriesIdSim: "35472",
       timeStartObs: thirtyDaysAgo,
       timeEndObs: now,
-      timeStartSim: thirtyDaysAgo,
-      timeEndSim: thirtyDaysFromNow,
+      timeStartSim: "",
+      timeEndSim: "",
     };
     const response = await fetch(`/api/charts/getHydrometricForecast`, {
       method: "POST",
