@@ -49,16 +49,12 @@ export default function Login() {
         body: JSON.stringify(data),
       });
       if (authRequest.status == 200) {
-        setLoading(false);
+        setAuthError(false);
         router.push("/");
-      }
-      if (authRequest.status == 401) {
-        setLoading(false);
-        setAuthError(true);
       } else {
-        setLoading(false);
-        setError(true);
+        setAuthError(true);
       }
+      setLoading(false);
     } catch (error: unknown) {
       reportError(error as Error);
     }
