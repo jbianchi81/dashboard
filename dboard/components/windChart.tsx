@@ -80,7 +80,7 @@ export class WindChart extends Component<WindChartProps> {
       this.state;
 
     return (
-      <ResponsiveContainer width="100%" height={600}>
+      <ResponsiveContainer width="100%" height={300}>
         <LineChart margin={{ right: 10, left: 20 }} data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis

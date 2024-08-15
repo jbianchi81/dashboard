@@ -1,6 +1,7 @@
 import Alert from "@mui/material/Alert";
 import DrawerMenu from "../components/drawer";
 import Box from "@mui/material/Box";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import moment from "moment";
 import { parseCookies } from "nookies";
@@ -150,16 +151,33 @@ export default function Meteorological() {
           pl: 10,
         }}
       >
-        <Typography variant="h4" sx={{ ml: 5 }}>
+        <Typography variant="h4" sx={{ ml: 5, mt: -2 }}>
           Pronóstico Meteorológico en el Río de la Plata
         </Typography>
         <Box
           sx={{
             display: "flex",
-            m: 5,
+            ml: 5,
+            mr: 10,
+            mt: 4,
           }}
         >
-          {/* <HydroChart data={hydroData}></HydroChart> */}
+          <HydroChart data={hydroData}></HydroChart>
+          <Image
+            src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
+            width={500}
+            height={450}
+            alt="map"
+          />
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            ml: 5,
+            mr: 5,
+            mt: -5,
+          }}
+        >
           <WindChart data={windData}></WindChart>
         </Box>
       </Box>

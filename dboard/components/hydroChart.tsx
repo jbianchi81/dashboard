@@ -180,7 +180,7 @@ export class HydroChart extends Component<HydroChartProps> {
           Alejar
         </button>
 
-        <ResponsiveContainer width="100%" height={600}>
+        <ResponsiveContainer width={1000} height={500}>
           <ComposedChart
             margin={{ right: 10, left: 20 }}
             data={data}
