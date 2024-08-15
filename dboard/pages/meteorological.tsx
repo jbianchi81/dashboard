@@ -5,6 +5,17 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
+import Typography from "@mui/material/Typography";
+import {
+  HydroChart,
+  HydroEntry,
+  buildHydroEntries,
+} from "../components/hydroChart";
+import {
+  WindChart,
+  WindEntry,
+  buildWindEntries,
+} from "../components/windChart";
 
 const drawerWidth = 250;
 
@@ -32,6 +43,8 @@ export const getServerSideProps = async (
 
 export default function Meteorological() {
   const [error, setError] = useState(false);
+  const [hydroData, setHydroData] = useState([] as HydroEntry[]);
+  const [windData, setWindData] = useState([] as WindEntry[]);
 
   const fourDaysAgo = moment().subtract(4, "d").toISOString();
   const now = moment().toISOString();
@@ -49,18 +62,23 @@ export default function Meteorological() {
       timeStartSim: fourDaysAgo,
       timeEndSim: fourDaysFromNow,
     };
-    const response = await fetch(`/api/charts/getHydrometricForecast`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
-    });
-    if (response.status == 200) {
-      const result = await response.json();
-      return result;
-    } else {
+    try {
+      const response = await fetch(`/api/charts/getHydrometricForecast`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      if (response.status === 200) {
+        const result = await response.json();
+        return result;
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
       setError(true);
     }
   }
@@ -74,25 +92,49 @@ export default function Meteorological() {
       timeStart: fourDaysAgo,
       timeEnd: fifteenDaysFromNow,
     };
-    const response = await fetch(`/api/charts/getWindForecast`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json, text/plain, */*",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(params),
-    });
-    if (response.status == 200) {
-      const result = await response.json();
-      return result;
-    } else {
+    try {
+      const response = await fetch(`/api/charts/getWindForecast`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      if (response.status === 200) {
+        const result = await response.json();
+        return result;
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
       setError(true);
     }
   }
 
   useEffect(() => {
-    getHydrometricHeightData();
-    getWindData();
+    async function fetchData() {
+      const hydrometricResult = await getHydrometricHeightData();
+      const windResult = await getWindData();
+
+      if (!hydrometricResult || !windResult) {
+        return;
+      }
+      const hydroEntries = buildHydroEntries(
+        hydrometricResult.simulation.series[1].pronosticos,
+        hydrometricResult.observations,
+        hydrometricResult.simulation.series[0].pronosticos,
+        hydrometricResult.simulation.series[3].pronosticos
+      );
+      setHydroData(hydroEntries);
+      const windEntries = buildWindEntries(
+        windResult.wind_direction_obs,
+        windResult.wind_velocity_obs
+      );
+      setWindData(windEntries);
+    }
+    fetchData();
   }, []);
 
   return (
@@ -101,32 +143,42 @@ export default function Meteorological() {
       <Box
         sx={{
           display: "flex",
+          flexDirection: "column",
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
+          ml: { sm: `${drawerWidth}px}` },
           pr: 10,
           pl: 10,
         }}
       >
-        <h1>Pronóstico Meteorológico</h1>
+        <Typography variant="h4" sx={{ ml: 5 }}>
+          Pronóstico Meteorológico en el Río de la Plata
+        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            m: 5,
+          }}
+        >
+          {/* <HydroChart data={hydroData}></HydroChart> */}
+          <WindChart data={windData}></WindChart>
+        </Box>
       </Box>
       {error && (
-        <>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              width: { sm: `calc(100% - ${drawerWidth}px)` },
-              ml: { sm: `${drawerWidth}px` },
-              pr: 10,
-              pl: 10,
-            }}
-          >
-            <Alert severity="error" sx={{ mt: 10 }}>
-              Ocurrió un error, por favor vuelva a intentarlo
-            </Alert>
-          </Box>
-        </>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px}` },
+            pr: 10,
+            pl: 10,
+          }}
+        >
+          <Alert severity="error" sx={{ mt: 10 }}>
+            Ocurrió un error, por favor vuelva a intentarlo
+          </Alert>
+        </Box>
       )}
     </>
   );
