@@ -169,7 +169,7 @@ export default function Meteorological() {
           <Image
             src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
             width={500}
-            height={450}
+            height={430}
             alt="map"
           />
         </Box>
@@ -178,10 +178,12 @@ export default function Meteorological() {
             display: "flex",
             ml: 5,
             mr: 5,
-            mt: -5,
+            mt: -7,
           }}
         >
-          <WindChart data={windData}></WindChart>
+          <CurrentPng>
+            {(props) => <WindChart data={windData} pngProps={props} />}
+          </CurrentPng>
         </Box>
       </Box>
       {error && (

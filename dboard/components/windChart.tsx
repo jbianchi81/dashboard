@@ -9,7 +9,10 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { CurrentPngProps } from "recharts-to-png";
+import FileSaver from "file-saver";
 import _ from "lodash";
+import Button from "@mui/material/Button";
 
 export type WindEntry = {
   date: number;
@@ -49,6 +52,7 @@ interface GraphState {
   top: string;
   bottom: string;
   animation: boolean;
+  pngProps: CurrentPngProps;
 }
 
 const initialState: GraphState = {
@@ -60,10 +64,12 @@ const initialState: GraphState = {
   top: "dataMax+1",
   bottom: "dataMin-1",
   animation: true,
+  pngProps: [] as unknown as CurrentPngProps,
 };
 
 interface WindChartProps {
   data: WindEntry[];
+  pngProps: CurrentPngProps;
 }
 
 export class WindChart extends Component<WindChartProps> {
@@ -73,93 +79,121 @@ export class WindChart extends Component<WindChartProps> {
     super(props);
     this.state = initialState;
     this.state.data = props.data;
+    this.state.pngProps = props.pngProps;
   }
+
+  handleDownload = async () => {
+    const png = await this.props.pngProps.getPng();
+    if (png) {
+      FileSaver.saveAs(png, "direccion-y-velocidad-viento.png");
+    }
+  };
 
   render() {
     const { data, left, right, refAreaLeft, refAreaRight, top, bottom } =
       this.state;
 
     return (
-      <ResponsiveContainer width="100%" height={300}>
-        <LineChart margin={{ right: 10, left: 20 }} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            allowDataOverflow
-            dataKey="date"
-            domain={[left, right]}
-            tickCount={10}
-            tickFormatter={(unixTime) =>
-              new Date(unixTime).toLocaleDateString("en-GB")
-            }
-            type="number"
-          />
-          <YAxis
-            yAxisId="left"
-            allowDataOverflow
-            domain={[bottom, top]}
-            type="number"
-            label={{
-              value: "Dirección del viento",
-              angle: -90,
-              position: "insideLeft",
-              offset: -10,
-            }}
-            tickCount={10}
-            tickFormatter={(tick) => {
-              return tick.toFixed(1);
-            }}
-          />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            allowDataOverflow
-            domain={[bottom, top]}
-            type="number"
-            label={{
-              value: "Velocidad del viento",
-              angle: -90,
-              position: "outsideLeft",
-              offset: 10,
-            }}
-            tickCount={10}
-            tickFormatter={(tick) => {
-              return tick.toFixed(1);
-            }}
-          />
-          <Tooltip
-            labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
-          />
-          <Legend
-            width={180}
-            layout="vertical"
-            wrapperStyle={{
-              top: 10,
-              right: 90,
-              backgroundColor: "#f5f5f5",
-              border: "1px solid #d5d5d5",
-              borderRadius: 3,
-            }}
-          />
-          <Line
-            yAxisId="left"
-            type="monotone"
-            dataKey="wind_direction_obs"
-            dot={false}
-            name="Dirección del viento"
-            stroke="#01599b"
-            animationDuration={300}
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="wind_velocity_obs"
-            stroke="#8ad3e0"
-            dot={false}
-            name="Velocidad del viento"
-            animationDuration={300}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      <div
+        className="highlight-bar-charts"
+        style={{ userSelect: "none", width: "100%" }}
+      >
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => this.handleDownload()}
+          sx={{ mb: 2, mr: 2 }}
+        >
+          Descargar gráfico
+        </Button>
+        <Button size="small" variant="outlined" sx={{ mb: 2 }}>
+          Descargar CSV
+        </Button>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart
+            margin={{ right: 10, left: 20 }}
+            data={data}
+            ref={this.props.pngProps.chartRef}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              allowDataOverflow
+              dataKey="date"
+              domain={[left, right]}
+              tickCount={10}
+              tickFormatter={(unixTime) =>
+                new Date(unixTime).toLocaleDateString("en-GB")
+              }
+              type="number"
+            />
+            <YAxis
+              yAxisId="left"
+              allowDataOverflow
+              domain={[bottom, top]}
+              type="number"
+              label={{
+                value: "Dirección del viento",
+                angle: -90,
+                position: "insideLeft",
+                offset: -10,
+              }}
+              tickCount={10}
+              tickFormatter={(tick) => {
+                return tick.toFixed(1);
+              }}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              allowDataOverflow
+              domain={[bottom, top]}
+              type="number"
+              label={{
+                value: "Velocidad del viento",
+                angle: -90,
+                position: "outsideLeft",
+                offset: 10,
+              }}
+              tickCount={10}
+              tickFormatter={(tick) => {
+                return tick.toFixed(1);
+              }}
+            />
+            <Tooltip
+              labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
+            />
+            <Legend
+              width={180}
+              layout="vertical"
+              wrapperStyle={{
+                top: 10,
+                right: 90,
+                backgroundColor: "#f5f5f5",
+                border: "1px solid #d5d5d5",
+                borderRadius: 3,
+              }}
+            />
+            <Line
+              yAxisId="left"
+              type="monotone"
+              dataKey="wind_direction_obs"
+              dot={false}
+              name="Dirección del viento"
+              stroke="#01599b"
+              animationDuration={300}
+            />
+            <Line
+              yAxisId="right"
+              type="monotone"
+              dataKey="wind_velocity_obs"
+              stroke="#8ad3e0"
+              dot={false}
+              name="Velocidad del viento"
+              animationDuration={300}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     );
   }
 

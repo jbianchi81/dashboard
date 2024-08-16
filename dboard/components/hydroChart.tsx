@@ -205,7 +205,7 @@ export class HydroChart extends Component<HydroChartProps> {
           Descargar CSV
         </Button>
 
-        <ResponsiveContainer width={1000} height={500}>
+        <ResponsiveContainer width={1000} height={450}>
           <ComposedChart
             margin={{ right: 10, left: 20 }}
             data={data}
