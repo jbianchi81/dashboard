@@ -11,6 +11,7 @@ import {
 import { Typography } from "@mui/material";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
+import { CurrentPng } from "recharts-to-png";
 
 const drawerWidth = 250;
 
@@ -115,7 +116,9 @@ export default function ShortTerm() {
             m: 5,
           }}
         >
-          <HydroChart data={data}></HydroChart>
+          <CurrentPng>
+            {(props) => <HydroChart data={data} pngProps={props} />}
+          </CurrentPng>
         </Box>
       </Box>
       {error && (

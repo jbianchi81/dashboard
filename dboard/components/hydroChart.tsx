@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Button from "@mui/material/Button";
 import {
   Area,
   Legend,
@@ -12,7 +13,8 @@ import {
   ResponsiveContainer,
   ComposedChart,
 } from "recharts";
-
+import { CurrentPngProps } from "recharts-to-png";
+import FileSaver from "file-saver";
 import _ from "lodash";
 
 export type HydroEntry = {
@@ -91,6 +93,7 @@ interface GraphState {
   top: string;
   bottom: string;
   animation: boolean;
+  pngProps: CurrentPngProps;
 }
 
 const initialState: GraphState = {
@@ -102,10 +105,12 @@ const initialState: GraphState = {
   top: "dataMax+1",
   bottom: "dataMin-1",
   animation: true,
+  pngProps: [] as unknown as CurrentPngProps,
 };
 
 interface HydroChartProps {
   data: HydroEntry[];
+  pngProps: CurrentPngProps;
 }
 
 export class HydroChart extends Component<HydroChartProps> {
@@ -115,6 +120,7 @@ export class HydroChart extends Component<HydroChartProps> {
     super(props);
     this.state = initialState;
     this.state.data = props.data;
+    this.state.pngProps = props.pngProps;
   }
 
   zoom() {
@@ -163,6 +169,13 @@ export class HydroChart extends Component<HydroChartProps> {
     }));
   }
 
+  handleDownload = async () => {
+    const png = await this.props.pngProps.getPng();
+    if (png) {
+      FileSaver.saveAs(png, "altura-hidrometrica.png");
+    }
+  };
+
   render() {
     const { data, left, right, refAreaLeft, refAreaRight, top, bottom } =
       this.state;
@@ -172,13 +185,25 @@ export class HydroChart extends Component<HydroChartProps> {
         className="highlight-bar-charts"
         style={{ userSelect: "none", width: "100%" }}
       >
-        <button
-          type="button"
-          className="btn update"
+        <Button
+          size="small"
+          variant="outlined"
           onClick={this.zoomOut.bind(this)}
+          sx={{ mb: 2, mr: 2 }}
         >
           Alejar
-        </button>
+        </Button>
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={() => this.handleDownload()}
+          sx={{ mb: 2, mr: 2 }}
+        >
+          Descargar gráfico
+        </Button>
+        <Button size="small" variant="outlined" sx={{ mb: 2 }}>
+          Descargar CSV
+        </Button>
 
         <ResponsiveContainer width={1000} height={500}>
           <ComposedChart
@@ -190,6 +215,7 @@ export class HydroChart extends Component<HydroChartProps> {
               this.setState({ refAreaRight: e.activeLabel })
             }
             onMouseUp={this.zoom.bind(this)}
+            ref={this.props.pngProps.chartRef}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
