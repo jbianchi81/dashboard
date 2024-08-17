@@ -164,7 +164,9 @@ export default function Meteorological() {
           }}
         >
           <CurrentPng>
-            {(props) => <HydroChart data={hydroData} pngProps={props} />}
+            {(props) => (
+              <HydroChart data={hydroData} height={600} pngProps={props} />
+            )}
           </CurrentPng>
           <Image
             src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"

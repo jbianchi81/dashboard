@@ -111,7 +111,9 @@ export default function LongTerm() {
           }}
         >
           <CurrentPng>
-            {(props) => <HydroChart data={data} pngProps={props} />}
+            {(props) => (
+              <HydroChart data={data} height={600} pngProps={props} />
+            )}
           </CurrentPng>
         </Box>
       </Box>

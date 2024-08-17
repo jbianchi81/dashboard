@@ -13,6 +13,7 @@ import { CurrentPngProps } from "recharts-to-png";
 import FileSaver from "file-saver";
 import _ from "lodash";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
 
 export type WindEntry = {
   date: number;
@@ -98,17 +99,6 @@ export class WindChart extends Component<WindChartProps> {
         className="highlight-bar-charts"
         style={{ userSelect: "none", width: "100%" }}
       >
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={() => this.handleDownload()}
-          sx={{ mb: 2, mr: 2 }}
-        >
-          Descargar gráfico
-        </Button>
-        <Button size="small" variant="outlined" sx={{ mb: 2 }}>
-          Descargar CSV
-        </Button>
         <ResponsiveContainer width="100%" height={300}>
           <LineChart
             margin={{ right: 10, left: 20 }}
@@ -193,6 +183,25 @@ export class WindChart extends Component<WindChartProps> {
             />
           </LineChart>
         </ResponsiveContainer>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            mt: -5,
+          }}
+        >
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => this.handleDownload()}
+            sx={{ mr: 2 }}
+          >
+            Descargar gráfico
+          </Button>
+          <Button size="small" variant="outlined">
+            Descargar CSV
+          </Button>
+        </Box>
       </div>
     );
   }
