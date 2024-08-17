@@ -152,12 +152,16 @@ export default function Meteorological() {
           pl: 10,
         }}
       >
-        <Typography variant="h4" sx={{ ml: 5, mt: -2 }}>
-          Pronóstico Meteorológico en el Río de la Plata
+        <Typography fontSize={{ lg: 30, sm: 20, xs: 20 }} sx={{ ml: 5 }}>
+          Pronóstico Meteorológico del Río de la Plata
+        </Typography>
+        <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
+          Altura hidrométrica en Estación San Fernando
         </Typography>
         <Box
           sx={{
             display: "flex",
+            flexDirection: "row",
             ml: 5,
             mr: 10,
             mt: 4,
@@ -165,22 +169,27 @@ export default function Meteorological() {
         >
           <CurrentPng>
             {(props) => (
-              <HydroChart data={hydroData} height={600} pngProps={props} />
+              <HydroChart data={hydroData} height={500} pngProps={props} />
             )}
           </CurrentPng>
-          <Image
-            src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
-            width={500}
-            height={430}
-            alt="map"
-          />
+          <Box sx={{ ml: 5 }}>
+            <Image
+              src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
+              width={400}
+              height={400}
+              alt="map"
+            />
+          </Box>
         </Box>
+        <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 5 }}>
+          Velocidad y dirección del viento en Estación Pilote Norden
+        </Typography>
         <Box
           sx={{
             display: "flex",
             ml: 5,
             mr: 5,
-            mt: -7,
+            mt: 4,
           }}
         >
           <CurrentPng>

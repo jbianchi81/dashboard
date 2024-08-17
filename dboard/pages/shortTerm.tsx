@@ -107,8 +107,11 @@ export default function ShortTerm() {
           pl: 10,
         }}
       >
-        <Typography variant="h4" sx={{ ml: 5 }}>
+        <Typography fontSize={{ lg: 30, sm: 20, xs: 20 }} sx={{ ml: 5 }}>
           Pronóstico a Corto Plazo
+        </Typography>
+        <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
+          Altura hidrométrica en Estación Atucha
         </Typography>
         <Box
           sx={{
