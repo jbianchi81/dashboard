@@ -6,7 +6,10 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
-import Typography from "@mui/material/Typography";
+import { Button, Typography } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   HydroChart,
   HydroEntry,
@@ -43,26 +46,30 @@ export const getServerSideProps = async (
   };
 };
 
+const fourDaysAgo = moment().subtract(4, "d").toISOString();
+const now = moment().toISOString();
+const fifteenDaysFromNow = moment().add(15, "d").toISOString();
+
 export default function Meteorological() {
   const [error, setError] = useState(false);
   const [hydroData, setHydroData] = useState([] as HydroEntry[]);
   const [windData, setWindData] = useState([] as WindEntry[]);
+  const [hydroTimeStartObs_, setHydroTimeStartObs] = useState(fourDaysAgo);
+  const [hydroTimeEndObs_, setHydroTimeEndObs] = useState(now);
 
-  const fourDaysAgo = moment().subtract(4, "d").toISOString();
-  const now = moment().toISOString();
-  const fourDaysFromNow = moment().add(4, "d").toISOString();
-  const fifteenDaysFromNow = moment().add(15, "d").toISOString();
-
-  async function getHydrometricHeightData() {
+  async function getHydrometricHeightData(
+    timeStartObs_: string,
+    timeEndObs_: string
+  ) {
     const params = {
       type: "puntual",
       seriesIdObs: "52",
       calId: "432",
       seriesIdSim: "26202",
-      timeStartObs: fourDaysAgo,
-      timeEndObs: now,
-      timeStartSim: fourDaysAgo,
-      timeEndSim: fourDaysFromNow,
+      timeStartObs: timeStartObs_,
+      timeEndObs: timeEndObs_,
+      timeStartSim: "",
+      timeEndSim: "",
     };
     try {
       const response = await fetch(`/api/charts/getHydrometricForecast`, {
@@ -85,14 +92,14 @@ export default function Meteorological() {
     }
   }
 
-  async function getWindData() {
+  async function getWindData(timeStart_: string, timeEnd_: string) {
     const params = {
       type: "puntual",
       estacionId: "1740",
       seriesIdWindVel: "35478",
       seriesIdWindDir: "35479",
-      timeStart: fourDaysAgo,
-      timeEnd: fifteenDaysFromNow,
+      timeStart: timeStart_,
+      timeEnd: timeEnd_,
     };
     try {
       const response = await fetch(`/api/charts/getWindForecast`, {
@@ -115,27 +122,45 @@ export default function Meteorological() {
     }
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      const hydrometricResult = await getHydrometricHeightData();
-      const windResult = await getWindData();
+  function handleSinceChange(e: any) {
+    const date = e.$d.toISOString();
+    setHydroTimeStartObs(date);
+  }
 
-      if (!hydrometricResult || !windResult) {
-        return;
-      }
-      const hydroEntries = buildHydroEntries(
-        hydrometricResult.simulation.series[1].pronosticos,
-        hydrometricResult.observations,
-        hydrometricResult.simulation.series[0].pronosticos,
-        hydrometricResult.simulation.series[3].pronosticos
-      );
-      setHydroData(hydroEntries);
-      const windEntries = buildWindEntries(
-        windResult.wind_direction_obs,
-        windResult.wind_velocity_obs
-      );
-      setWindData(windEntries);
+  function handleToChange(e: any) {
+    const date = e.$d.toISOString();
+    setHydroTimeEndObs(date);
+  }
+
+  function handleDateChange() {
+    fetchData();
+  }
+
+  async function fetchData() {
+    const hydrometricResult = await getHydrometricHeightData(
+      hydroTimeStartObs_,
+      hydroTimeEndObs_
+    );
+    const windResult = await getWindData(fourDaysAgo, fifteenDaysFromNow);
+
+    if (!hydrometricResult || !windResult) {
+      return;
     }
+    const hydroEntries = buildHydroEntries(
+      hydrometricResult.simulation.series[1].pronosticos,
+      hydrometricResult.observations,
+      hydrometricResult.simulation.series[0].pronosticos,
+      hydrometricResult.simulation.series[3].pronosticos
+    );
+    setHydroData(hydroEntries);
+    const windEntries = buildWindEntries(
+      windResult.wind_direction_obs,
+      windResult.wind_velocity_obs
+    );
+    setWindData(windEntries);
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -161,40 +186,64 @@ export default function Meteorological() {
         <Box
           sx={{
             display: "flex",
-            flexDirection: "row",
-            ml: 5,
-            mr: 10,
-            mt: 4,
+            flexDirection: "column",
+            m: 5,
           }}
         >
+          <Typography sx={{ ml: 10, mb: 1 }}>Seleccionar fechas</Typography>
+          <Box sx={{ display: "flex", flexDirection: "row", ml: 10, mb: 3 }}>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale="EN-GB"
+            >
+              <DatePicker
+                label="Desde"
+                onChange={(e) => handleSinceChange(e)}
+                format="DD-MM-YYYY"
+              />
+              <DatePicker
+                label="Hasta"
+                sx={{ ml: 3, mr: 3 }}
+                onChange={(ev) => handleToChange(ev)}
+                format="DD-MM-YYYY"
+              />
+            </LocalizationProvider>
+            <Button variant="contained" size="small" onClick={handleDateChange}>
+              Ver
+            </Button>
+          </Box>
           <CurrentPng>
             {(props) => (
-              <HydroChart data={hydroData} height={500} pngProps={props} />
+              <HydroChart data={hydroData} height={400} pngProps={props} />
             )}
           </CurrentPng>
-          <Box sx={{ ml: 5 }}>
-            <Image
-              src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
-              width={400}
-              height={400}
-              alt="map"
-            />
-          </Box>
         </Box>
         <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 5 }}>
           Velocidad y dirección del viento en Estación Pilote Norden
         </Typography>
+
         <Box
           sx={{
             display: "flex",
+            flexDirection: "row",
             ml: 5,
             mr: 5,
             mt: 4,
           }}
         >
           <CurrentPng>
-            {(props) => <WindChart data={windData} pngProps={props} />}
+            {(props) => (
+              <WindChart data={windData} pngProps={props} height={500} />
+            )}
           </CurrentPng>
+          <Box sx={{ ml: 5 }}>
+            <Image
+              src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
+              width={400}
+              height={450}
+              alt="map"
+            />
+          </Box>
         </Box>
       </Box>
       {error && (

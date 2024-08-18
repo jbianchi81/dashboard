@@ -313,7 +313,7 @@ export class HydroChart extends Component<HydroChartProps> {
           >
             Descargar gráfico
           </Button>
-          <Button size="small" variant="outlined">
+          <Button size="small" variant="outlined" disabled>
             Descargar CSV
           </Button>
         </Box>

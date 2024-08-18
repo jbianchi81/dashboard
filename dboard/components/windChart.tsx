@@ -54,6 +54,7 @@ interface GraphState {
   bottom: string;
   animation: boolean;
   pngProps: CurrentPngProps;
+  height: number;
 }
 
 const initialState: GraphState = {
@@ -65,11 +66,13 @@ const initialState: GraphState = {
   top: "dataMax+1",
   bottom: "dataMin-1",
   animation: true,
+  height: 1,
   pngProps: [] as unknown as CurrentPngProps,
 };
 
 interface WindChartProps {
   data: WindEntry[];
+  height: number;
   pngProps: CurrentPngProps;
 }
 
@@ -80,6 +83,7 @@ export class WindChart extends Component<WindChartProps> {
     super(props);
     this.state = initialState;
     this.state.data = props.data;
+    this.state.height = props.height;
     this.state.pngProps = props.pngProps;
   }
 
@@ -91,15 +95,23 @@ export class WindChart extends Component<WindChartProps> {
   };
 
   render() {
-    const { data, left, right, refAreaLeft, refAreaRight, top, bottom } =
-      this.state;
+    const {
+      data,
+      left,
+      right,
+      refAreaLeft,
+      refAreaRight,
+      top,
+      bottom,
+      height,
+    } = this.state;
 
     return (
       <div
         className="highlight-bar-charts"
         style={{ userSelect: "none", width: "100%" }}
       >
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={height}>
           <LineChart
             margin={{ right: 10, left: 20 }}
             data={data}
@@ -198,7 +210,7 @@ export class WindChart extends Component<WindChartProps> {
           >
             Descargar gráfico
           </Button>
-          <Button size="small" variant="outlined">
+          <Button size="small" variant="outlined" disabled>
             Descargar CSV
           </Button>
         </Box>
