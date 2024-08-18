@@ -58,29 +58,39 @@ export function buildHydroEntries(
   return entries;
 }
 
+const entryMaxValue = (entry: HydroEntry) => {
+  return Math.max(
+    entry["error_band"]?.[1] || 0,
+    entry["estimated"] || 0,
+    entry["observed"] || 0
+  );
+};
+
+const entryMinValue = (entry: HydroEntry) => {
+  return Math.min(
+    entry["error_band"]?.[0] || 0,
+    entry["estimated"] || 0,
+    entry["observed"] || 0
+  );
+};
+
 const getAxisYDomain = (
   from: number,
   to: number,
   offset: number,
   data: HydroEntry[]
 ) => {
-  const refData = data.filter(
-    (entry) => entry.date >= from && entry.date <= to
-  );
-
-  let [bottom, top] = [
-    refData[0]["error_band"]?.[0] || 0,
-    refData[0]["error_band"]?.[1] || 0,
-  ];
-  refData.forEach((d) => {
-    let ref: keyof HydroEntry = "error_band";
-    if (d[ref]?.[1] && d[ref][1] > top) {
-      top = d[ref][1];
-    }
-    if (d[ref]?.[0] && d[ref][0] < bottom) {
-      bottom = d[ref][0];
-    }
-  });
+  const [bottom, top] = data
+    .filter((entry) => entry.date >= from && entry.date <= to)
+    .reduceRight(
+      ([bottom, top], entry) => {
+        return [
+          Math.min(bottom, entryMinValue(entry)),
+          Math.max(top, entryMaxValue(entry)),
+        ];
+      },
+      [Infinity, -Infinity]
+    );
 
   return [(bottom | 0) - offset, (top | 0) + offset];
 };
