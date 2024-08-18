@@ -2,6 +2,8 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { createTheme, ThemeProvider } from "@mui/material";
 import Head from "next/head";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const theme = createTheme({
   palette: {
@@ -21,7 +23,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Tablero de Monitoreo</title>
       </Head>
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+          <Component {...pageProps} />
+        </LocalizationProvider>
       </ThemeProvider>
     </>
   );
