@@ -153,8 +153,8 @@ export class WindChart extends Component<WindChartProps> {
               label={{
                 value: "Velocidad del viento",
                 angle: -90,
-                position: "outsideLeft",
-                offset: 10,
+                position: "insideLeft",
+                offset: 60,
               }}
               tickCount={10}
               tickFormatter={(tick) => {
