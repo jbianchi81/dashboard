@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Button from "@mui/material/Button";
 import {
   Area,
   Legend,
@@ -12,8 +13,10 @@ import {
   ResponsiveContainer,
   ComposedChart,
 } from "recharts";
-
+import { CurrentPngProps } from "recharts-to-png";
+import FileSaver from "file-saver";
 import _ from "lodash";
+import Box from "@mui/material/Box";
 
 export type HydroEntry = {
   date: number;
@@ -55,29 +58,39 @@ export function buildHydroEntries(
   return entries;
 }
 
+const entryMaxValue = (entry: HydroEntry) => {
+  return Math.max(
+    entry["error_band"]?.[1] || 0,
+    entry["estimated"] || 0,
+    entry["observed"] || 0
+  );
+};
+
+const entryMinValue = (entry: HydroEntry) => {
+  return Math.min(
+    entry["error_band"]?.[0] || 0,
+    entry["estimated"] || 0,
+    entry["observed"] || 0
+  );
+};
+
 const getAxisYDomain = (
   from: number,
   to: number,
   offset: number,
   data: HydroEntry[]
 ) => {
-  const refData = data.filter(
-    (entry) => entry.date >= from && entry.date <= to
-  );
-
-  let [bottom, top] = [
-    refData[0]["error_band"]?.[0] || 0,
-    refData[0]["error_band"]?.[1] || 0,
-  ];
-  refData.forEach((d) => {
-    let ref: keyof HydroEntry = "error_band";
-    if (d[ref]?.[1] && d[ref][1] > top) {
-      top = d[ref][1];
-    }
-    if (d[ref]?.[0] && d[ref][0] < bottom) {
-      bottom = d[ref][0];
-    }
-  });
+  const [bottom, top] = data
+    .filter((entry) => entry.date >= from && entry.date <= to)
+    .reduceRight(
+      ([bottom, top], entry) => {
+        return [
+          Math.min(bottom, entryMinValue(entry)),
+          Math.max(top, entryMaxValue(entry)),
+        ];
+      },
+      [Infinity, -Infinity]
+    );
 
   return [(bottom | 0) - offset, (top | 0) + offset];
 };
@@ -91,6 +104,8 @@ interface GraphState {
   top: string;
   bottom: string;
   animation: boolean;
+  pngProps: CurrentPngProps;
+  height: number;
 }
 
 const initialState: GraphState = {
@@ -102,10 +117,14 @@ const initialState: GraphState = {
   top: "dataMax+1",
   bottom: "dataMin-1",
   animation: true,
+  pngProps: [] as unknown as CurrentPngProps,
+  height: 1,
 };
 
 interface HydroChartProps {
   data: HydroEntry[];
+  pngProps: CurrentPngProps;
+  height: number;
 }
 
 export class HydroChart extends Component<HydroChartProps> {
@@ -115,6 +134,8 @@ export class HydroChart extends Component<HydroChartProps> {
     super(props);
     this.state = initialState;
     this.state.data = props.data;
+    this.state.pngProps = props.pngProps;
+    this.state.height = props.height;
   }
 
   zoom() {
@@ -163,24 +184,31 @@ export class HydroChart extends Component<HydroChartProps> {
     }));
   }
 
+  handleDownload = async () => {
+    const png = await this.props.pngProps.getPng();
+    if (png) {
+      FileSaver.saveAs(png, "altura-hidrometrica.png");
+    }
+  };
+
   render() {
-    const { data, left, right, refAreaLeft, refAreaRight, top, bottom } =
-      this.state;
+    const {
+      data,
+      left,
+      right,
+      refAreaLeft,
+      refAreaRight,
+      top,
+      bottom,
+      height,
+    } = this.state;
 
     return (
       <div
         className="highlight-bar-charts"
         style={{ userSelect: "none", width: "100%" }}
       >
-        <button
-          type="button"
-          className="btn update"
-          onClick={this.zoomOut.bind(this)}
-        >
-          Alejar
-        </button>
-
-        <ResponsiveContainer width="100%" height={600}>
+        <ResponsiveContainer width="100%" height={height}>
           <ComposedChart
             margin={{ right: 10, left: 20 }}
             data={data}
@@ -190,6 +218,7 @@ export class HydroChart extends Component<HydroChartProps> {
               this.setState({ refAreaRight: e.activeLabel })
             }
             onMouseUp={this.zoom.bind(this)}
+            ref={this.props.pngProps.chartRef}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
@@ -271,6 +300,33 @@ export class HydroChart extends Component<HydroChartProps> {
             ) : null}
           </ComposedChart>
         </ResponsiveContainer>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            mt: -5,
+          }}
+        >
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={this.zoomOut.bind(this)}
+            sx={{ mr: 2 }}
+          >
+            Alejar
+          </Button>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => this.handleDownload()}
+            sx={{ mr: 2 }}
+          >
+            Descargar gráfico
+          </Button>
+          <Button size="small" variant="outlined" disabled>
+            Descargar CSV
+          </Button>
+        </Box>
       </div>
     );
   }

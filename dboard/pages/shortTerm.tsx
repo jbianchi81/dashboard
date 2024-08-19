@@ -8,9 +8,13 @@ import {
   HydroEntry,
   buildHydroEntries,
 } from "../components/hydroChart";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
+import { CurrentPng } from "recharts-to-png";
 
 const drawerWidth = 250;
 
@@ -36,24 +40,28 @@ export const getServerSideProps = async (
   };
 };
 
+const fourDaysAgo = moment().subtract(4, "d").toISOString();
+const now = moment().toISOString();
+
 export default function ShortTerm() {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
+  const [timeStartObs_, setTimeStartObs] = useState(fourDaysAgo);
+  const [timeEndObs_, setTimeEndObs] = useState(now);
 
-  const fourDaysAgo = moment().subtract(4, "d").toISOString();
-  const now = moment().toISOString();
-  const fourDaysFromNow = moment().add(4, "d").toISOString();
-
-  async function getHydrometricHeightData() {
+  async function getHydrometricHeightData(
+    timeStartObs_: string,
+    timeEndObs_: string
+  ) {
     const params = {
       type: "puntual",
       seriesIdObs: "151",
       calId: "489",
       seriesIdSim: "3403",
-      timeStartObs: fourDaysAgo,
-      timeEndObs: now,
-      timeStartSim: fourDaysAgo,
-      timeEndSim: fourDaysFromNow,
+      timeStartObs: timeStartObs_,
+      timeEndObs: timeEndObs_,
+      timeStartSim: "",
+      timeEndSim: "",
     };
     try {
       const response = await fetch(`/api/charts/getHydrometricForecast`, {
@@ -76,20 +84,35 @@ export default function ShortTerm() {
     }
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      const result = await getHydrometricHeightData();
-      if (!result) {
-        return;
-      }
-      const entries = buildHydroEntries(
-        result.simulation.series[2].pronosticos,
-        result.observations,
-        result.simulation.series[0].pronosticos,
-        result.simulation.series[1].pronosticos
-      );
-      setData(entries);
+  function handleSinceChange(e: any) {
+    const date = e.$d.toISOString();
+    setTimeStartObs(date);
+  }
+
+  function handleToChange(e: any) {
+    const date = e.$d.toISOString();
+    setTimeEndObs(date);
+  }
+
+  function handleDateChange() {
+    fetchData();
+  }
+
+  async function fetchData() {
+    const result = await getHydrometricHeightData(timeStartObs_, timeEndObs_);
+    if (!result) {
+      return;
     }
+    const entries = buildHydroEntries(
+      result.simulation.series[2].pronosticos,
+      result.observations,
+      result.simulation.series[0].pronosticos,
+      result.simulation.series[1].pronosticos
+    );
+    setData(entries);
+  }
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -106,16 +129,46 @@ export default function ShortTerm() {
           pl: 10,
         }}
       >
-        <Typography variant="h4" sx={{ ml: 5 }}>
+        <Typography fontSize={{ lg: 30, sm: 20, xs: 20 }} sx={{ ml: 5 }}>
           Pronóstico a Corto Plazo
+        </Typography>
+        <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
+          Altura hidrométrica en Estación Atucha
         </Typography>
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             m: 5,
           }}
         >
-          <HydroChart data={data}></HydroChart>
+          <Typography sx={{ ml: 10, mb: 1 }}>Seleccionar fechas</Typography>
+          <Box sx={{ display: "flex", flexDirection: "row", mb: 3, ml: 10 }}>
+            <LocalizationProvider
+              dateAdapter={AdapterDayjs}
+              adapterLocale="EN-GB"
+            >
+              <DatePicker
+                label="Desde"
+                onChange={(e) => handleSinceChange(e)}
+                format="DD-MM-YYYY"
+              />
+              <DatePicker
+                label="Hasta"
+                sx={{ ml: 3, mr: 3 }}
+                onChange={(ev) => handleToChange(ev)}
+                format="DD-MM-YYYY"
+              />
+            </LocalizationProvider>
+            <Button variant="contained" size="small" onClick={handleDateChange}>
+              Ver
+            </Button>
+          </Box>
+          <CurrentPng>
+            {(props) => (
+              <HydroChart data={data} height={550} pngProps={props} />
+            )}
+          </CurrentPng>
         </Box>
       </Box>
       {error && (

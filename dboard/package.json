@@ -14,7 +14,10 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.16.1",
     "@mui/material": "^5.16.1",
+    "@mui/x-date-pickers": "^7.13.0",
     "cookie": "^0.6.0",
+    "dayjs": "^1.11.12",
+    "file-saver": "^2.0.5",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "next": "14.2.5",
@@ -23,10 +26,12 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^2.12.7",
+    "recharts-to-png": "^2.3.2",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/cookie": "^0.6.0",
+    "@types/file-saver": "^2.0.7",
     "@types/lodash": "^4.17.7",
     "@types/node": "^20",
     "@types/react": "^18",

@@ -11,6 +11,7 @@ import {
 } from "@/components/hydroChart";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
+import { CurrentPng } from "recharts-to-png";
 
 const drawerWidth = 250;
 
@@ -42,18 +43,17 @@ export default function LongTerm() {
 
   const thirtyDaysAgo = moment().subtract(30, "d").toISOString();
   const now = moment().toISOString();
-  const thirtyDaysFromNow = moment().add(30, "d").toISOString();
 
   async function getHydrometricHeightData() {
     const params = {
       type: "puntual",
       seriesIdObs: "151",
       calId: "499",
-      seriesIdSim: "35471",
+      seriesIdSim: "35472",
       timeStartObs: thirtyDaysAgo,
       timeEndObs: now,
-      timeStartSim: thirtyDaysAgo,
-      timeEndSim: thirtyDaysFromNow,
+      timeStartSim: "",
+      timeEndSim: "",
     };
     const response = await fetch(`/api/charts/getHydrometricForecast`, {
       method: "POST",
@@ -101,8 +101,11 @@ export default function LongTerm() {
           pl: 10,
         }}
       >
-        <Typography variant="h4" sx={{ ml: 5 }}>
+        <Typography fontSize={{ lg: 30, sm: 20, xs: 20 }} sx={{ ml: 5 }}>
           Pronóstico a Largo Plazo
+        </Typography>
+        <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
+          Altura hidrométrica en Estación Atucha
         </Typography>
         <Box
           sx={{
@@ -110,7 +113,11 @@ export default function LongTerm() {
             m: 5,
           }}
         >
-          <HydroChart data={data}></HydroChart>
+          <CurrentPng>
+            {(props) => (
+              <HydroChart data={data} height={600} pngProps={props} />
+            )}
+          </CurrentPng>
         </Box>
       </Box>
       {error && (
