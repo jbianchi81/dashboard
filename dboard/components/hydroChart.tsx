@@ -309,6 +309,20 @@ export class HydroChart extends Component<HydroChartProps> {
             />
             <Tooltip
               labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
+              formatter={(x: string, key: string) => {
+                if (key !== "Banda de error") {
+                  return parseFloat(x).toFixed(2);
+                } else {
+                  let [a, b] = x;
+                  if (a && b) {
+                    return `${parseFloat(a).toFixed(2)}, ${parseFloat(
+                      b
+                    ).toFixed(2)}`;
+                  } else {
+                    return "";
+                  }
+                }
+              }}
             />
             <ReferenceLine
               x={fdate}
