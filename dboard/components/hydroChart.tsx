@@ -230,14 +230,14 @@ export class HydroChart extends Component<HydroChartProps> {
     ];
 
     const datas = () => {
-      const all: [] = [];
+      const all: any = [];
       data.map((d) => {
         const aux = {
           date: new Date(d.date).toISOString(),
           obs: d.observed,
           sim: d.estimated,
-          bottomError: d.error_band[0],
-          topError: d.error_band[1],
+          bottomError: d.error_band ? d.error_band[0] : null,
+          topError: d.error_band ? d.error_band[1] : null,
         };
         all.push(aux);
       });

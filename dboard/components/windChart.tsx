@@ -127,7 +127,7 @@ export class WindChart extends Component<WindChartProps> {
     ];
 
     const datas = () => {
-      const all: [] = [];
+      const all: any = [];
       data.map((d) => {
         const aux = {
           date: new Date(d.date).toISOString(),
