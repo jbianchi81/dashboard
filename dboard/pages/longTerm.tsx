@@ -47,7 +47,7 @@ export default function LongTerm() {
   async function getHydrometricHeightData() {
     const params = {
       type: "puntual",
-      seriesIdObs: "151",
+      seriesIdObs: "36030",
       calId: "499",
       seriesIdSim: "35472",
       timeStartObs: thirtyDaysAgo,
