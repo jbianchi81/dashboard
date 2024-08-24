@@ -196,6 +196,7 @@ export class WindChart extends Component<WindChartProps> {
             />
             <Tooltip
               labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
+              formatter={(x) => Number(x).toFixed(2)}
             />
             <Legend
               width={180}
