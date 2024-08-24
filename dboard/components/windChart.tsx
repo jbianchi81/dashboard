@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { CurrentPngProps } from "recharts-to-png";
 import FileSaver from "file-saver";
+import CsvDownloader from "react-csv-downloader";
 import _ from "lodash";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
@@ -105,6 +106,38 @@ export class WindChart extends Component<WindChartProps> {
       bottom,
       height,
     } = this.state;
+
+    // CSV creation
+
+    console.log(data);
+
+    const columns = [
+      {
+        id: "date",
+        displayName: "Fecha",
+      },
+      {
+        id: "wind_direction_obs",
+        displayName: "Dirección del viento",
+      },
+      {
+        id: "wind_velocity_obs",
+        displayName: "Velocidad del viento",
+      },
+    ];
+
+    const datas = () => {
+      const all: [] = [];
+      data.map((d) => {
+        const aux = {
+          date: new Date(d.date).toISOString(),
+          wind_direction_obs: d.wind_direction_obs,
+          wind_velocity_obs: d.wind_velocity_obs,
+        };
+        all.push(aux);
+      });
+      return all;
+    };
 
     return (
       <div
@@ -210,9 +243,18 @@ export class WindChart extends Component<WindChartProps> {
           >
             Descargar gráfico
           </Button>
-          <Button size="small" variant="outlined" disabled>
-            Descargar CSV
-          </Button>
+          <CsvDownloader
+            filename="pronostico-viento"
+            extension=".csv"
+            separator=";"
+            wrapColumnChar=""
+            columns={columns}
+            datas={datas}
+          >
+            <Button size="small" variant="outlined">
+              Descargar CSV
+            </Button>
+          </CsvDownloader>
         </Box>
       </div>
     );
