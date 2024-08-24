@@ -40,13 +40,13 @@ export const getServerSideProps = async (
   };
 };
 
-const fourDaysAgo = moment().subtract(4, "d").toISOString();
+const sevenDaysAgo = moment().subtract(7, "d").toISOString();
 const now = moment().toISOString();
 
 export default function ShortTerm() {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
-  const [timeStartObs_, setTimeStartObs] = useState(fourDaysAgo);
+  const [timeStartObs_, setTimeStartObs] = useState(sevenDaysAgo);
   const [timeEndObs_, setTimeEndObs] = useState(now);
 
   async function getHydrometricHeightData(

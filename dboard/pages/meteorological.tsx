@@ -46,7 +46,7 @@ export const getServerSideProps = async (
   };
 };
 
-const fourDaysAgo = moment().subtract(4, "d").toISOString();
+const sevenDaysAgo = moment().subtract(7, "d").toISOString();
 const now = moment().toISOString();
 const fifteenDaysFromNow = moment().add(15, "d").toISOString();
 
@@ -54,7 +54,7 @@ export default function Meteorological() {
   const [error, setError] = useState(false);
   const [hydroData, setHydroData] = useState([] as HydroEntry[]);
   const [windData, setWindData] = useState([] as WindEntry[]);
-  const [hydroTimeStartObs_, setHydroTimeStartObs] = useState(fourDaysAgo);
+  const [hydroTimeStartObs_, setHydroTimeStartObs] = useState(sevenDaysAgo);
   const [hydroTimeEndObs_, setHydroTimeEndObs] = useState(now);
 
   async function getHydrometricHeightData(
@@ -141,7 +141,7 @@ export default function Meteorological() {
       hydroTimeStartObs_,
       hydroTimeEndObs_
     );
-    const windResult = await getWindData(fourDaysAgo, fifteenDaysFromNow);
+    const windResult = await getWindData(sevenDaysAgo, fifteenDaysFromNow);
 
     if (!hydrometricResult || !windResult) {
       return;

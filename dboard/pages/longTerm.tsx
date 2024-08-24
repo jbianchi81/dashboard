@@ -41,7 +41,7 @@ export default function LongTerm() {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
 
-  const thirtyDaysAgo = moment().subtract(30, "d").toISOString();
+  const sixtyDaysAgo = moment().subtract(60, "d").toISOString();
   const now = moment().toISOString();
 
   async function getHydrometricHeightData() {
@@ -50,7 +50,7 @@ export default function LongTerm() {
       seriesIdObs: "36030",
       calId: "499",
       seriesIdSim: "35472",
-      timeStartObs: thirtyDaysAgo,
+      timeStartObs: sixtyDaysAgo,
       timeEndObs: now,
       timeStartSim: "",
       timeEndSim: "",
