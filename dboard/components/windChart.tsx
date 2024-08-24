@@ -109,8 +109,6 @@ export class WindChart extends Component<WindChartProps> {
 
     // CSV creation
 
-    console.log(data);
-
     const columns = [
       {
         id: "date",

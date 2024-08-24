@@ -111,6 +111,7 @@ function assembleResponse(
     createObs(o)
   );
   const simulation_ = {
+    forecast_date: simulation.forecast_date,
     series: simulation.series.map((s: SeriesItem) => createForecast(s)).flat(),
   };
   const response: HydrometricForecastResponse = {
@@ -156,6 +157,7 @@ type ObservationsResponse = {
 };
 
 type SimulationResponse = {
+  forecast_date: string;
   series: SeriesItem[];
 };
 
@@ -166,6 +168,7 @@ type SeriesItem = {
 };
 
 type ModifSimulationResponse = {
+  forecast_date: string;
   series: ModifSeriesItem[];
 };
 

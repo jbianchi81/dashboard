@@ -56,6 +56,7 @@ export default function Meteorological() {
   const [windData, setWindData] = useState([] as WindEntry[]);
   const [hydroTimeStartObs_, setHydroTimeStartObs] = useState(sevenDaysAgo);
   const [hydroTimeEndObs_, setHydroTimeEndObs] = useState(now);
+  const [forecastDate, setForecastDate] = useState("");
 
   async function getHydrometricHeightData(
     timeStartObs_: string,
@@ -157,6 +158,7 @@ export default function Meteorological() {
       windResult.wind_direction_obs,
       windResult.wind_velocity_obs
     );
+    setForecastDate(hydrometricResult.simulation.forecast_date);
     setWindData(windEntries);
   }
 
@@ -214,7 +216,12 @@ export default function Meteorological() {
           </Box>
           <CurrentPng>
             {(props) => (
-              <HydroChart data={hydroData} height={400} pngProps={props} />
+              <HydroChart
+                data={hydroData}
+                height={400}
+                pngProps={props}
+                forecastDate={forecastDate}
+              />
             )}
           </CurrentPng>
         </Box>
