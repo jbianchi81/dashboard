@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { CurrentPngProps } from "recharts-to-png";
 import FileSaver from "file-saver";
+import CsvDownloader from "react-csv-downloader";
 import _ from "lodash";
 import Box from "@mui/material/Box";
 
@@ -203,6 +204,46 @@ export class HydroChart extends Component<HydroChartProps> {
       height,
     } = this.state;
 
+    // CSV creation
+
+    const columns = [
+      {
+        id: "date",
+        displayName: "Fecha",
+      },
+      {
+        id: "obs",
+        displayName: "Nivel observado",
+      },
+      {
+        id: "sim",
+        displayName: "Nivel pronosticado",
+      },
+      {
+        id: "bottomError",
+        displayName: "Banda de error inferior",
+      },
+      {
+        id: "topError",
+        displayName: "Banda de error superior",
+      },
+    ];
+
+    const datas = () => {
+      const all: [] = [];
+      data.map((d) => {
+        const aux = {
+          date: new Date(d.date).toISOString(),
+          obs: d.observed,
+          sim: d.estimated,
+          bottomError: d.error_band[0],
+          topError: d.error_band[1],
+        };
+        all.push(aux);
+      });
+      return all;
+    };
+
     return (
       <div
         className="highlight-bar-charts"
@@ -323,9 +364,18 @@ export class HydroChart extends Component<HydroChartProps> {
           >
             Descargar gráfico
           </Button>
-          <Button size="small" variant="outlined" disabled>
-            Descargar CSV
-          </Button>
+          <CsvDownloader
+            filename="altura-hidrometrica"
+            extension=".csv"
+            separator=";"
+            wrapColumnChar=""
+            columns={columns}
+            datas={datas}
+          >
+            <Button size="small" variant="outlined">
+              Descargar CSV
+            </Button>
+          </CsvDownloader>
         </Box>
       </div>
     );
