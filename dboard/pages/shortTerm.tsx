@@ -40,14 +40,15 @@ export const getServerSideProps = async (
   };
 };
 
-const fourDaysAgo = moment().subtract(4, "d").toISOString();
+const sevenDaysAgo = moment().subtract(7, "d").toISOString();
 const now = moment().toISOString();
 
 export default function ShortTerm() {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
-  const [timeStartObs_, setTimeStartObs] = useState(fourDaysAgo);
+  const [timeStartObs_, setTimeStartObs] = useState(sevenDaysAgo);
   const [timeEndObs_, setTimeEndObs] = useState(now);
+  const [forecastDate, setForecastDate] = useState("");
 
   async function getHydrometricHeightData(
     timeStartObs_: string,
@@ -110,6 +111,7 @@ export default function ShortTerm() {
       result.simulation.series[1].pronosticos
     );
     setData(entries);
+    setForecastDate(result.simulation.forecast_date);
   }
 
   useEffect(() => {
@@ -166,7 +168,12 @@ export default function ShortTerm() {
           </Box>
           <CurrentPng>
             {(props) => (
-              <HydroChart data={data} height={550} pngProps={props} />
+              <HydroChart
+                data={data}
+                height={550}
+                pngProps={props}
+                forecastDate={forecastDate}
+              />
             )}
           </CurrentPng>
         </Box>

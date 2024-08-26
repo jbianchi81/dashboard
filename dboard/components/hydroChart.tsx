@@ -12,6 +12,8 @@ import {
   ReferenceArea,
   ResponsiveContainer,
   ComposedChart,
+  ReferenceLine,
+  Label,
 } from "recharts";
 import { CurrentPngProps } from "recharts-to-png";
 import FileSaver from "file-saver";
@@ -126,6 +128,7 @@ interface HydroChartProps {
   data: HydroEntry[];
   pngProps: CurrentPngProps;
   height: number;
+  forecastDate: string;
 }
 
 export class HydroChart extends Component<HydroChartProps> {
@@ -244,6 +247,11 @@ export class HydroChart extends Component<HydroChartProps> {
       return all;
     };
 
+    const fdate = new Date(this.props.forecastDate).getTime();
+    const fdateLabel = `Fecha de emisión del pronóstico: ${new Date(
+      fdate
+    ).toLocaleString("en-GB")}`;
+
     return (
       <div
         className="highlight-bar-charts"
@@ -301,7 +309,35 @@ export class HydroChart extends Component<HydroChartProps> {
             />
             <Tooltip
               labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
+              formatter={(x: string, key: string) => {
+                if (key !== "Banda de error") {
+                  return parseFloat(x).toFixed(2);
+                } else {
+                  let [a, b] = x;
+                  if (a && b) {
+                    return `${parseFloat(a).toFixed(2)}, ${parseFloat(
+                      b
+                    ).toFixed(2)}`;
+                  } else {
+                    return "";
+                  }
+                }
+              }}
             />
+            <ReferenceLine
+              x={fdate}
+              yAxisId="1"
+              stroke="#014475"
+              strokeDasharray="3 3"
+            >
+              <Label
+                value={fdateLabel}
+                position="insideBottom"
+                fill="#014475"
+                offset={20}
+              />
+            </ReferenceLine>
+
             <Legend
               width={170}
               layout="vertical"

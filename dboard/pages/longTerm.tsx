@@ -40,17 +40,18 @@ export const getServerSideProps = async (
 export default function LongTerm() {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
+  const [forecastDate, setForecastDate] = useState("");
 
-  const thirtyDaysAgo = moment().subtract(30, "d").toISOString();
+  const sixtyDaysAgo = moment().subtract(60, "d").toISOString();
   const now = moment().toISOString();
 
   async function getHydrometricHeightData() {
     const params = {
       type: "puntual",
-      seriesIdObs: "151",
+      seriesIdObs: "36030",
       calId: "499",
       seriesIdSim: "35472",
-      timeStartObs: thirtyDaysAgo,
+      timeStartObs: sixtyDaysAgo,
       timeEndObs: now,
       timeStartSim: "",
       timeEndSim: "",
@@ -84,6 +85,7 @@ export default function LongTerm() {
         result.simulation.series[2].pronosticos
       );
       setData(entries);
+      setForecastDate(result.simulation.forecast_date);
     }
     fetchData();
   }, []);
@@ -115,7 +117,12 @@ export default function LongTerm() {
         >
           <CurrentPng>
             {(props) => (
-              <HydroChart data={data} height={600} pngProps={props} />
+              <HydroChart
+                data={data}
+                height={600}
+                pngProps={props}
+                forecastDate={forecastDate}
+              />
             )}
           </CurrentPng>
         </Box>
