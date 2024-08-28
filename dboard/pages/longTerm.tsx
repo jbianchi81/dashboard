@@ -109,41 +109,44 @@ export default function LongTerm() {
         <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
           Altura hidrométrica en Estación Atucha
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            m: 5,
-          }}
-        >
-          <CurrentPng>
-            {(props) => (
-              <HydroChart
-                data={data}
-                height={600}
-                pngProps={props}
-                forecastDate={forecastDate}
-              />
-            )}
-          </CurrentPng>
-        </Box>
+        {error && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: { sm: `calc(100% - 2*${drawerWidth}px)` },
+              ml: { sm: `${drawerWidth}px}` },
+              mr: { sm: `${drawerWidth}px}` },
+              pr: 10,
+              pl: 10,
+            }}
+          >
+            <Alert severity="error" sx={{ mt: 10 }}>
+              Ocurrió un error, por favor vuelva a intentarlo
+            </Alert>
+          </Box>
+        )}
+        {!error && (
+          <Box
+            sx={{
+              display: "flex",
+              m: 5,
+            }}
+          >
+            <CurrentPng>
+              {(props) => (
+                <HydroChart
+                  data={data}
+                  height={600}
+                  pngProps={props}
+                  forecastDate={forecastDate}
+                />
+              )}
+            </CurrentPng>
+          </Box>
+        )}
       </Box>
-      {error && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px}` },
-            pr: 10,
-            pl: 10,
-          }}
-        >
-          <Alert severity="error" sx={{ mt: 10 }}>
-            Ocurrió un error, por favor vuelva a intentarlo
-          </Alert>
-        </Box>
-      )}
     </>
   );
 }
