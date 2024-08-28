@@ -137,64 +137,71 @@ export default function ShortTerm() {
         <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
           Altura hidrométrica en Estación Atucha
         </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            m: 5,
-          }}
-        >
-          <Typography sx={{ ml: 10, mb: 1 }}>Seleccionar fechas</Typography>
-          <Box sx={{ display: "flex", flexDirection: "row", mb: 3, ml: 10 }}>
-            <LocalizationProvider
-              dateAdapter={AdapterDayjs}
-              adapterLocale="EN-GB"
-            >
-              <DatePicker
-                label="Desde"
-                onChange={(e) => handleSinceChange(e)}
-                format="DD-MM-YYYY"
-              />
-              <DatePicker
-                label="Hasta"
-                sx={{ ml: 3, mr: 3 }}
-                onChange={(ev) => handleToChange(ev)}
-                format="DD-MM-YYYY"
-              />
-            </LocalizationProvider>
-            <Button variant="contained" size="small" onClick={handleDateChange}>
-              Ver
-            </Button>
+        {error && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: { sm: `calc(100% - 2*${drawerWidth}px)` },
+              ml: { sm: `${drawerWidth}px}` },
+              mr: { sm: `${drawerWidth}px}` },
+              pr: 10,
+              pl: 10,
+            }}
+          >
+            <Alert severity="error" sx={{ mt: 10 }}>
+              Ocurrió un error, por favor vuelva a intentarlo
+            </Alert>
           </Box>
-          <CurrentPng>
-            {(props) => (
-              <HydroChart
-                data={data}
-                height={550}
-                pngProps={props}
-                forecastDate={forecastDate}
-              />
-            )}
-          </CurrentPng>
-        </Box>
+        )}
+        {!error && (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              m: 5,
+            }}
+          >
+            <Typography sx={{ ml: 10, mb: 1 }}>Seleccionar fechas</Typography>
+            <Box sx={{ display: "flex", flexDirection: "row", mb: 3, ml: 10 }}>
+              <LocalizationProvider
+                dateAdapter={AdapterDayjs}
+                adapterLocale="EN-GB"
+              >
+                <DatePicker
+                  label="Desde"
+                  onChange={(e) => handleSinceChange(e)}
+                  format="DD-MM-YYYY"
+                />
+                <DatePicker
+                  label="Hasta"
+                  sx={{ ml: 3, mr: 3 }}
+                  onChange={(ev) => handleToChange(ev)}
+                  format="DD-MM-YYYY"
+                />
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleDateChange}
+              >
+                Ver
+              </Button>
+            </Box>
+            <CurrentPng>
+              {(props) => (
+                <HydroChart
+                  data={data}
+                  height={550}
+                  pngProps={props}
+                  forecastDate={forecastDate}
+                />
+              )}
+            </CurrentPng>
+          </Box>
+        )}
       </Box>
-      {error && (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px}` },
-            pr: 10,
-            pl: 10,
-          }}
-        >
-          <Alert severity="error" sx={{ mt: 10 }}>
-            Ocurrió un error, por favor vuelva a intentarlo
-          </Alert>
-        </Box>
-      )}
     </>
   );
 }

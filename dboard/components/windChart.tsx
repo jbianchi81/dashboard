@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, FunctionComponent } from "react";
 import {
   LineChart,
   Line,
@@ -6,7 +6,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from "recharts";
 import { CurrentPngProps } from "recharts-to-png";
@@ -15,6 +14,14 @@ import CsvDownloader from "react-csv-downloader";
 import _ from "lodash";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
+import NorthIcon from "@mui/icons-material/North";
+import NorthEastIcon from "@mui/icons-material/NorthEast";
+import NorthWestIcon from "@mui/icons-material/NorthWest";
+import SouthIcon from "@mui/icons-material/South";
+import SouthEastIcon from "@mui/icons-material/SouthEast";
+import SouthWestIcon from "@mui/icons-material/SouthWest";
+import EastIcon from "@mui/icons-material/East";
+import WestIcon from "@mui/icons-material/West";
 
 export type WindEntry = {
   date: number;
@@ -108,7 +115,6 @@ export class WindChart extends Component<WindChartProps> {
     } = this.state;
 
     // CSV creation
-
     const columns = [
       {
         id: "date",
@@ -137,6 +143,52 @@ export class WindChart extends Component<WindChartProps> {
       return all;
     };
 
+    const CustomizedDot: FunctionComponent<any> = (props: any) => {
+      const { cx, cy, value, payload } = props;
+      const windDir = payload.wind_direction_obs;
+      const north = <SouthIcon color="primary" />;
+      const northEast = <SouthWestIcon color="primary" />;
+      const east = <WestIcon color="primary" />;
+      const southEast = <NorthWestIcon color="primary" />;
+      const south = <NorthIcon color="primary" />;
+      const southWest = <NorthEastIcon color="primary" />;
+      const west = <EastIcon color="primary" />;
+      const northWest = <SouthEastIcon color="primary" />;
+
+      function assignIcon() {
+        switch (true) {
+          case windDir >= 337.5 || windDir < 22.5:
+            return north;
+          case windDir >= 22.5 && windDir < 67.5:
+            return northEast;
+          case windDir >= 67.5 && windDir < 112.5:
+            return east;
+          case windDir >= 112.5 && windDir < 157.5:
+            return southEast;
+          case windDir >= 157.5 && windDir < 202.5:
+            return south;
+          case windDir >= 202.5 && windDir < 247.5:
+            return southWest;
+          case windDir >= 247.5 && windDir < 292.5:
+            return west;
+          case windDir >= 292.5 && windDir < 337.5:
+            return northWest;
+        }
+      }
+
+      return (
+        <svg
+          x={cx - 10}
+          y={cy - 10}
+          width={20}
+          height={20}
+          viewBox="0 0 1024 1024"
+        >
+          {assignIcon()}
+        </svg>
+      );
+    };
+
     return (
       <div
         className="highlight-bar-charts"
@@ -160,32 +212,13 @@ export class WindChart extends Component<WindChartProps> {
               type="number"
             />
             <YAxis
-              yAxisId="left"
               allowDataOverflow
               domain={[bottom, top]}
               type="number"
               label={{
-                value: "Dirección del viento",
+                value: "Velocidad del viento (m/s)",
                 angle: -90,
                 position: "insideLeft",
-                offset: -10,
-              }}
-              tickCount={10}
-              tickFormatter={(tick) => {
-                return tick.toFixed(1);
-              }}
-            />
-            <YAxis
-              yAxisId="right"
-              orientation="right"
-              allowDataOverflow
-              domain={[bottom, top]}
-              type="number"
-              label={{
-                value: "Velocidad del viento",
-                angle: -90,
-                position: "insideLeft",
-                offset: 60,
               }}
               tickCount={10}
               tickFormatter={(tick) => {
@@ -196,32 +229,11 @@ export class WindChart extends Component<WindChartProps> {
               labelFormatter={(x) => new Date(x).toLocaleString("en-GB")}
               formatter={(x) => Number(x).toFixed(2)}
             />
-            <Legend
-              width={180}
-              layout="vertical"
-              wrapperStyle={{
-                top: 10,
-                right: 90,
-                backgroundColor: "#f5f5f5",
-                border: "1px solid #d5d5d5",
-                borderRadius: 3,
-              }}
-            />
             <Line
-              yAxisId="left"
-              type="monotone"
-              dataKey="wind_direction_obs"
-              dot={false}
-              name="Dirección del viento"
-              stroke="#01599b"
-              animationDuration={300}
-            />
-            <Line
-              yAxisId="right"
               type="monotone"
               dataKey="wind_velocity_obs"
-              stroke="#8ad3e0"
-              dot={false}
+              stroke="#52b5c7"
+              dot={<CustomizedDot />}
               name="Velocidad del viento"
               animationDuration={300}
             />
@@ -231,7 +243,8 @@ export class WindChart extends Component<WindChartProps> {
           sx={{
             display: "flex",
             flexDirection: "row",
-            mt: -5,
+            mt: 4,
+            mb: 4,
           }}
         >
           <Button
