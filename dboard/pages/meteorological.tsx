@@ -243,7 +243,7 @@ export default function Meteorological() {
               <WindChart data={windData} pngProps={props} height={500} />
             )}
           </CurrentPng>
-          <Box sx={{ ml: 5 }}>
+          <Box sx={{ ml: 5, mt: 1 }}>
             <Image
               src="https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"
               width={400}
