@@ -196,16 +196,8 @@ export class HydroChart extends Component<HydroChartProps> {
   };
 
   render() {
-    const {
-      data,
-      left,
-      right,
-      refAreaLeft,
-      refAreaRight,
-      top,
-      bottom,
-      height,
-    } = this.state;
+    let { data, left, right, refAreaLeft, refAreaRight, top, bottom, height } =
+      this.state;
 
     // CSV creation
 
@@ -294,7 +286,7 @@ export class HydroChart extends Component<HydroChartProps> {
             />
             <YAxis
               allowDataOverflow
-              domain={[bottom, top]}
+              domain={[(dmin) => dmin - 1, (dmax) => Math.max(dmax + 1, 5.5)]}
               type="number"
               yAxisId="1"
               label={{
@@ -336,6 +328,38 @@ export class HydroChart extends Component<HydroChartProps> {
                 fill="#014475"
                 offset={20}
               />
+            </ReferenceLine>
+            <ReferenceLine
+              y={0.8}
+              yAxisId="1"
+              stroke="#FFCB47"
+              strokeDasharray="15 3"
+            >
+              <Label position="insideBottom" fill="#014475" offset={20} />
+            </ReferenceLine>
+            <ReferenceLine
+              y={4}
+              yAxisId="1"
+              stroke="#FFCB47"
+              strokeDasharray="15 3"
+            >
+              <Label position="insideBottom" fill="#014475" offset={20} />
+            </ReferenceLine>
+            <ReferenceLine
+              y={0.5}
+              yAxisId="1"
+              stroke="#B80C09"
+              strokeDasharray="15 3"
+            >
+              <Label position="insideBottom" fill="#014475" offset={20} />
+            </ReferenceLine>
+            <ReferenceLine
+              y={5.1}
+              yAxisId="1"
+              stroke="#B80C09"
+              strokeDasharray="15 3"
+            >
+              <Label position="insideBottom" fill="#014475" offset={20} />
             </ReferenceLine>
 
             <Legend
