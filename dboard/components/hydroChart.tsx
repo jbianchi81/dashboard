@@ -286,7 +286,10 @@ export class HydroChart extends Component<HydroChartProps> {
             />
             <YAxis
               allowDataOverflow
-              domain={[(dmin) => dmin - 1, (dmax) => Math.max(dmax + 1, 5.5)]}
+              domain={[
+                (dmin: number) => dmin - 1,
+                (dmax: number) => Math.max(dmax + 1, 5.5),
+              ]}
               type="number"
               yAxisId="1"
               label={{
