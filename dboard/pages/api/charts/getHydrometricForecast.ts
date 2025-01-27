@@ -24,7 +24,7 @@ export default async function getHydrometricForecast(
 
   const sessionToken = req.cookies.session;
 
-  if (!sessionToken) {
+  if (process.env.skip_login !== "true" && !sessionToken) {
     res.status(401).json({ error: "Unauthorized" });
   } else {
     try {

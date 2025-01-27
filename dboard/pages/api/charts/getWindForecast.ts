@@ -18,7 +18,7 @@ export default async function getWindForecast(
 
   const sessionToken = req.cookies.session;
 
-  if (!sessionToken) {
+  if (process.env.skip_login !== "true" && !sessionToken) {
     res.status(401).json({ error: "Unauthorized" });
   } else {
     try {

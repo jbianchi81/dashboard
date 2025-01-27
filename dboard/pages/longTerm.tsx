@@ -21,7 +21,7 @@ export const getServerSideProps = async (
   const cookies = parseCookies(context);
   const sessionToken = cookies.session;
 
-  if (!sessionToken) {
+  if (process.env.skip_login !== "true" && !sessionToken) {
     return {
       redirect: {
         destination: "/login",

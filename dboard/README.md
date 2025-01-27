@@ -12,6 +12,12 @@
    ```
    donde pass es el token provisto para el acceso a la API alerta.ina.gob.ar/a5
 
+   Si desea saltear la pantalla de autenticación (login), agregar:
+
+   ```
+   skip_login = "true"
+   ```
+
 4. Construir la imagen Docker con el siguiente comando:
 
    ```
