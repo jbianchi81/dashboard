@@ -14,6 +14,7 @@ import {
   HydroChart,
   HydroEntry,
   buildHydroEntries,
+  getPronosByQualifier
 } from "../components/hydroChart";
 import {
   WindChart,
@@ -148,10 +149,10 @@ export default function Meteorological() {
       return;
     }
     const hydroEntries = buildHydroEntries(
-      hydrometricResult.simulation.series[1].pronosticos,
+      getPronosByQualifier(hydrometricResult.simulation.series,"main"),
       hydrometricResult.observations,
-      hydrometricResult.simulation.series[0].pronosticos,
-      hydrometricResult.simulation.series[3].pronosticos
+      getPronosByQualifier(hydrometricResult.simulation.series,"p05"),
+      getPronosByQualifier(hydrometricResult.simulation.series,"p95")
     );
     setHydroData(hydroEntries);
     const windEntries = buildWindEntries(

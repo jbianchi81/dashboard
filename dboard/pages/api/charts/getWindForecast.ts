@@ -52,15 +52,15 @@ function assembleResponse(
   windDirectionObs: WindObservationResponse[]
 ): WindForecastResponse {
   const geometry_: Geometry = {
-    type: metadata.features[0].geometry.type,
-    coordinates: metadata.features[0].geometry.coordinates,
+    type: metadata.geometry.type,
+    coordinates: metadata.geometry.coordinates,
   };
   const properties_: Properties = {
-    nombre: metadata.features[0].properties.nombre,
-    pais: metadata.features[0].properties.pais,
-    rio: metadata.features[0].properties.rio,
-    tipo: metadata.features[0].properties.tipo,
-    id: metadata.features[0].properties.id,
+    nombre: metadata.properties.nombre,
+    pais: metadata.properties.pais,
+    rio: metadata.properties.rio,
+    tipo: metadata.properties.tipo,
+    id: metadata.properties.id,
   };
 
   const metadata_: StationMetadataModifResponse = {
@@ -126,15 +126,12 @@ type WindObservationResponse = {
 };
 
 type StationMetadataResponse = {
-  features: Feature[];
-};
-
-type StationMetadataModifResponse = {
+  type: "Feature";
   geometry: Geometry;
   properties: Properties;
 };
 
-type Feature = {
+type StationMetadataModifResponse = {
   geometry: Geometry;
   properties: Properties;
 };

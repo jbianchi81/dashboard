@@ -7,6 +7,7 @@ import {
   HydroChart,
   HydroEntry,
   buildHydroEntries,
+  getPronosByQualifier
 } from "../components/hydroChart";
 import { Button, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -105,10 +106,10 @@ export default function ShortTerm() {
       return;
     }
     const entries = buildHydroEntries(
-      result.simulation.series[2].pronosticos,
+      getPronosByQualifier(result.simulation.series,"main"),
       result.observations,
-      result.simulation.series[0].pronosticos,
-      result.simulation.series[1].pronosticos
+      getPronosByQualifier(result.simulation.series,"error_band_01"),
+      getPronosByQualifier(result.simulation.series,"error_band_99")
     );
     setData(entries);
     setForecastDate(result.simulation.forecast_date);

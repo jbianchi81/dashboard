@@ -79,7 +79,7 @@ async function getSimulation(
   timestart: string,
   timeend: string
 ): Promise<SimulationResponse> {
-  const simUrl = `https://alerta.ina.gob.ar/a6/sim/calibrados/${calId}/corridas/last?series_id=${seriesId}&timestart=${timestart}&timeend=${timeend}`;
+  const simUrl = `https://alerta.ina.gob.ar/a6/sim/calibrados/${calId}/corridas/last?series_id=${seriesId}&timestart=${timestart}&timeend=${timeend}&includeProno=true&group_by_qualifier=true`;
   const response = await fetch(simUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -134,7 +134,7 @@ function createObs(observation: ObservationsResponse) {
 function createForecast(seriesItem: SeriesItem) {
   seriesItem.series_id;
   const pronosticos = seriesItem.pronosticos.map((p) => {
-    const r: Forecast = { time: p[0], value: p[2], qualifier: p[3] };
+    const r: Forecast = { time: p.timestart, value: p.valor.toString(), qualifier: seriesItem.qualifier };
     return r;
   });
   const ser: ModifSeriesItem = {
@@ -164,7 +164,7 @@ type SimulationResponse = {
 type SeriesItem = {
   series_id: number;
   qualifier: string;
-  pronosticos: string[][];
+  pronosticos: ObservationsResponse[];
 };
 
 type ModifSimulationResponse = {

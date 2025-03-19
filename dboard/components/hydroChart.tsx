@@ -131,6 +131,21 @@ interface HydroChartProps {
   forecastDate: string;
 }
 
+export function getPronosByQualifier(series : Serie[], qualifier : string) : Estimation[] {
+  // error_band_01
+  const index = series.map(s => s.qualifier).indexOf(qualifier)
+  if(index < 0) {
+    throw new Error("Missing the required qualifier " + qualifier)
+  }
+  return series[index].pronosticos
+}
+
+type Serie = {
+  series_id : number;
+  qualifier : string;
+  pronosticos : Estimation[]
+}
+
 export class HydroChart extends Component<HydroChartProps> {
   state: GraphState;
 

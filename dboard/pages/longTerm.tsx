@@ -8,6 +8,7 @@ import {
   HydroChart,
   HydroEntry,
   buildHydroEntries,
+  getPronosByQualifier
 } from "@/components/hydroChart";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
@@ -79,10 +80,10 @@ export default function LongTerm() {
         return;
       }
       const entries = buildHydroEntries(
-        result.simulation.series[1].pronosticos,
+        getPronosByQualifier(result.simulation.series,"main"),
         result.observations,
-        result.simulation.series[0].pronosticos,
-        result.simulation.series[2].pronosticos
+        getPronosByQualifier(result.simulation.series,"p10"),
+        getPronosByQualifier(result.simulation.series,"p90"),
       );
       setData(entries);
       setForecastDate(result.simulation.forecast_date);
