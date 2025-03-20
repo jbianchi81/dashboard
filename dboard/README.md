@@ -5,7 +5,7 @@
 
 2. En una terminal, navegar a la carpeta 'dboard' donde se encuentra el Dockerfile.
 
-3. Crear el archivo .env con lo siguiente:
+3. Crear el archivo .env.local con lo siguiente:
 
    ```
    token = "pass"
