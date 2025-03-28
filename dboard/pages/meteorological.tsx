@@ -42,7 +42,7 @@ export const getServerSideProps = async (
 
   return {
     props: {
-      session: sessionToken,
+      session: sessionToken ?? null,
     },
   };
 };
