@@ -1,0 +1,37 @@
+shortTerm:
+  default:
+    type: puntual
+    seriesIdObs: 151
+    nombre_estacion: Atucha
+    calId: 489
+    seriesIdSim: 3403
+    mainQualifier: main
+    errorBandLow: error_band_01
+    errorBandHigh: error_band_99
+    timeStartDays: 7
+  atucha:
+    type: puntual
+    seriesIdObs: 151
+    nombre_estacion: Atucha
+    calId: 489
+    seriesIdSim: 3403
+    mainQualifier: main
+    errorBandLow: error_band_01
+    errorBandHigh: error_band_99
+    timeStartDays: 7
+  lapaz:
+    type: puntual
+    seriesIdObs: 38484
+    nombre_estacion: La Paz
+    timeStartDays: 30
+  corrientes:
+    type: puntual
+    seriesIdObs: 19
+    nombre_estacion: Corrientes
+    calId: 289
+    seriesIdSim: 1540
+    mainQualifier: medio
+    errorBandLow: inferior
+    errorBandHigh: superior
+    timeStartDays: 30
+  

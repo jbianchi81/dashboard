@@ -16,6 +16,10 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { parseCookies } from "nookies";
 import { GetServerSidePropsContext } from "next";
 import { CurrentPng } from "recharts-to-png";
+import { useRouter } from "next/router";
+import { getPresets } from "../lib/presets";
+import Preset from "@/lib/domain/preset";
+
 
 const drawerWidth = 250;
 
@@ -37,29 +41,39 @@ export const getServerSideProps = async (
   return {
     props: {
       session: sessionToken,
+      presets: getPresets("shortTerm")
     },
   };
 };
 
-const sevenDaysAgo = moment().subtract(7, "d").toISOString();
-const now = moment().toISOString();
 
-export default function ShortTerm() {
+export default function ShortTerm({ session, presets } : { session: string, presets: Record<string, Preset> }) {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
-  const [timeStartObs_, setTimeStartObs] = useState(sevenDaysAgo);
-  const [timeEndObs_, setTimeEndObs] = useState(now);
+  const router = useRouter();
+  const { preset_id } = router.query;
+  const preset_id_str = Array.isArray(preset_id) ? preset_id[0] : preset_id ?? "default"
+  if(!presets.hasOwnProperty(preset_id_str)) {
+    throw new Error("Error: preset id not found: " + preset_id_str);
+  }
+  const preset = presets[preset_id_str]
+
+  const firstTimeStart = moment().subtract(preset.timeStartDays ?? 7, "d").toISOString();
+  const firstTimeEnd = moment().subtract(preset.timeEndDays ?? 0, "d").toISOString();
+  const [timeStartObs_, setTimeStartObs] = useState(firstTimeStart);
+  const [timeEndObs_, setTimeEndObs] = useState(firstTimeEnd);
   const [forecastDate, setForecastDate] = useState("");
+
 
   async function getHydrometricHeightData(
     timeStartObs_: string,
     timeEndObs_: string
   ) {
     const params = {
-      type: "puntual",
-      seriesIdObs: "151",
-      calId: "489",
-      seriesIdSim: "3403",
+      type: preset.type,
+      seriesIdObs: preset.seriesIdObs,
+      calId: preset.calId,
+      seriesIdSim: preset.seriesIdSim,
       timeStartObs: timeStartObs_,
       timeEndObs: timeEndObs_,
       timeStartSim: "",
@@ -106,10 +120,10 @@ export default function ShortTerm() {
       return;
     }
     const entries = buildHydroEntries(
-      getPronosByQualifier(result.simulation.series,"main"),
+      getPronosByQualifier(result.simulation.series, preset.mainQualifier ?? "main"),
       result.observations,
-      getPronosByQualifier(result.simulation.series,"error_band_01"),
-      getPronosByQualifier(result.simulation.series,"error_band_99")
+      getPronosByQualifier(result.simulation.series, preset.errorBandLow ?? "error_band_01"),
+      getPronosByQualifier(result.simulation.series, preset.errorBandHigh ?? "error_band_99")
     );
     setData(entries);
     setForecastDate(result.simulation.forecast_date);
@@ -136,7 +150,7 @@ export default function ShortTerm() {
           Pronóstico a Corto Plazo
         </Typography>
         <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
-          Altura hidrométrica en Estación Atucha
+          Altura hidrométrica en Estación {preset.nombre_estacion}
         </Typography>
         {error && (
           <Box
