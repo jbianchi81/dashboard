@@ -35,14 +35,19 @@ export default async function getHydrometricForecast(
         timeStartObs,
         timeEndObs
       );
-      const simulation = await getSimulation(
-        calId,
-        seriesIdSim,
-        timeStartSim,
-        timeEndSim
-      );
-      const response = assembleResponse(metaData, observations, simulation);
-      res.status(200).json(response);
+      if(calId && seriesIdSim) {
+        const simulation = await getSimulation(
+          calId,
+          seriesIdSim,
+          timeStartSim,
+          timeEndSim
+        );
+        const response = assembleResponse(metaData, observations, simulation);
+        res.status(200).json(response);
+      } else {
+        const response = assembleResponse(metaData, observations)
+        res.status(200).json(response);
+      }
     } catch (error: unknown) {
       console.error(error);
       res.status(500);
@@ -89,7 +94,7 @@ async function getSimulation(
 function assembleResponse(
   metadata: Metadata,
   observations: ObservationsResponse[],
-  simulation: SimulationResponse
+  simulation?: SimulationResponse
 ): HydrometricForecastResponse {
   const estacion_: Station = {
     nombre: metadata.estacion.nombre,
@@ -102,25 +107,37 @@ function assembleResponse(
   const unidades_: Units = {
     nombre: metadata.unidades.nombre,
   };
+  const percentiles_ref_: Record<number,number> = (metadata.percentiles_ref) ? metadata.percentiles_ref : {}
   const metadata_: Metadata = {
     estacion: estacion_,
     var: var_,
     unidades: unidades_,
+    percentiles_ref: percentiles_ref_
   };
   const observations_ = observations.map((o: ObservationsResponse) =>
     createObs(o)
   );
-  const simulation_ = {
-    forecast_date: simulation.forecast_date,
-    series: simulation.series.map((s: SeriesItem) => createForecast(s)).flat(),
-  };
-  const response: HydrometricForecastResponse = {
-    metadata: metadata_,
-    observations: observations_,
-    simulation: simulation_,
-  };
+  if(simulation) {
+    const simulation_ = {
+      forecast_date: simulation.forecast_date,
+      series: simulation.series.map((s: SeriesItem) => createForecast(s)).flat(),
+    };
+    const response: HydrometricForecastResponse = {
+      metadata: metadata_,
+      observations: observations_,
+      simulation: simulation_,
+    };
 
-  return response;
+    return response;
+
+  } else {
+    const response: HydrometricForecastResponse = {
+      metadata: metadata_,
+      observations: observations_
+    };
+
+    return response;
+  }
 }
 
 function createObs(observation: ObservationsResponse) {
@@ -148,7 +165,7 @@ function createForecast(seriesItem: SeriesItem) {
 type HydrometricForecastResponse = {
   metadata: Metadata;
   observations: ObservationsResponse[];
-  simulation: ModifSimulationResponse;
+  simulation?: ModifSimulationResponse;
 };
 
 type ObservationsResponse = {

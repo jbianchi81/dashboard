@@ -19,7 +19,7 @@ import { CurrentPng } from "recharts-to-png";
 import { useRouter } from "next/router";
 import { getPresets } from "../lib/presets";
 import Preset from "@/lib/domain/preset";
-
+import RefLines from "@/lib/domain/ref_lines"
 
 const drawerWidth = 250;
 
@@ -40,20 +40,21 @@ export const getServerSideProps = async (
 
   return {
     props: {
-      session: sessionToken,
+      session: sessionToken ?? null,
       presets: getPresets("shortTerm")
     },
   };
 };
 
 
-export default function ShortTerm({ session, presets } : { session: string, presets: Record<string, Preset> }) {
+export default function ShortTerm({ presets } : { presets: Record<string, Preset> }) {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
   const router = useRouter();
   const { preset_id } = router.query;
   const preset_id_str = Array.isArray(preset_id) ? preset_id[0] : preset_id ?? "default"
   if(!presets.hasOwnProperty(preset_id_str)) {
+    console.error({presets: presets})
     throw new Error("Error: preset id not found: " + preset_id_str);
   }
   const preset = presets[preset_id_str]
@@ -63,7 +64,25 @@ export default function ShortTerm({ session, presets } : { session: string, pres
   const [timeStartObs_, setTimeStartObs] = useState(firstTimeStart);
   const [timeEndObs_, setTimeEndObs] = useState(firstTimeEnd);
   const [forecastDate, setForecastDate] = useState("");
+  const initialRefLines : RefLines = {
+    bottom: (preset.refLines) ? preset.refLines.bottom : null,
+    low: (preset.refLines) ? preset.refLines.low : null,
+    up: (preset.refLines) ? preset.refLines.up : null,
+    top: (preset.refLines) ? preset.refLines.top : null
+  };
+  const [refLines, setRefLines] = useState<RefLines>(initialRefLines);
+  const [title, setTitle] = useState(preset.title ?? "");
+  const [nombre_variable, setNombreVariable] = useState("Altura hidrométrica")
+  const [nombre_estacion, setNombreEstacion] = useState(preset.nombre_estacion)
 
+  function setCustomRefLines(percentiles_ref : Record<number, number>) {
+    setRefLines({
+      bottom: (95 in percentiles_ref) ? percentiles_ref[95] : refLines.bottom,
+      low: (75 in percentiles_ref) ? percentiles_ref[75] : refLines.low,
+      up: (25 in percentiles_ref) ? percentiles_ref[25] : refLines.up,
+      top: (5 in percentiles_ref) ? percentiles_ref[5] : refLines.top
+    })    
+  }
 
   async function getHydrometricHeightData(
     timeStartObs_: string,
@@ -119,14 +138,29 @@ export default function ShortTerm({ session, presets } : { session: string, pres
     if (!result) {
       return;
     }
-    const entries = buildHydroEntries(
-      getPronosByQualifier(result.simulation.series, preset.mainQualifier ?? "main"),
-      result.observations,
-      getPronosByQualifier(result.simulation.series, preset.errorBandLow ?? "error_band_01"),
-      getPronosByQualifier(result.simulation.series, preset.errorBandHigh ?? "error_band_99")
-    );
-    setData(entries);
-    setForecastDate(result.simulation.forecast_date);
+    if(result.simulation) {
+      const entries = buildHydroEntries(
+        getPronosByQualifier(result.simulation.series, preset.mainQualifier ?? "main"),
+        result.observations,
+        getPronosByQualifier(result.simulation.series, preset.errorBandLow ?? "error_band_01"),
+        getPronosByQualifier(result.simulation.series, preset.errorBandHigh ?? "error_band_99")
+      );
+      setData(entries);
+      setForecastDate(result.simulation.forecast_date);
+    } else {
+      const entries = buildHydroEntries(
+        [],
+        result.observations,
+        [],
+        []
+      );
+      setData(entries);
+    }
+    if(result.metadata.percentiles_ref) {
+      setCustomRefLines(result.metadata.percentiles_ref)
+    }
+    setNombreVariable(result.metadata.var.nombre)
+    setNombreEstacion(result.metadata.estacion.nombre)
   }
 
   useEffect(() => {
@@ -147,10 +181,10 @@ export default function ShortTerm({ session, presets } : { session: string, pres
         }}
       >
         <Typography fontSize={{ lg: 30, sm: 20, xs: 20 }} sx={{ ml: 5 }}>
-          Pronóstico a Corto Plazo
+          { title }
         </Typography>
         <Typography fontSize={{ lg: 20, sm: 15, xs: 15 }} sx={{ ml: 5, mt: 3 }}>
-          Altura hidrométrica en Estación {preset.nombre_estacion}
+          {nombre_variable} en Estación {nombre_estacion}
         </Typography>
         {error && (
           <Box
@@ -211,6 +245,8 @@ export default function ShortTerm({ session, presets } : { session: string, pres
                   height={550}
                   pngProps={props}
                   forecastDate={forecastDate}
+                  refLines={{...refLines}}
+                  timeStart={new Date(timeStartObs_)}
                 />
               )}
             </CurrentPng>

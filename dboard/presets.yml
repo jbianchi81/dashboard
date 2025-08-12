@@ -9,6 +9,12 @@ shortTerm:
     errorBandLow: error_band_01
     errorBandHigh: error_band_99
     timeStartDays: 7
+    refLines:
+      bottom: 0.5
+      low: 0.8
+      up: 4.0
+      top: 5.1
+    title: Pronóstico a Corto Plazo
   atucha:
     type: puntual
     seriesIdObs: 151
@@ -19,11 +25,34 @@ shortTerm:
     errorBandLow: error_band_01
     errorBandHigh: error_band_99
     timeStartDays: 7
+    refLines:
+      bottom: 0.5
+      low: 0.8
+      up: 4.0
+      top: 5.1
+    title: Pronóstico a Corto Plazo
+  atucha_lt:
+    type: puntual
+    seriesIdObs: 36030
+    nombre_estacion: Atucha
+    calId: 499
+    seriesIdSim: 35472
+    timeStartDays: 60
+    refLines:
+      bottom: 0.5
+      low: 0.8
+      up: 4.0
+      top: 5.1
+    mainQualifier: main
+    errorBandLow: p10
+    errorBandHigh: p90
+    title: Pronóstico a Largo Plazo
   lapaz:
     type: puntual
     seriesIdObs: 38484
     nombre_estacion: La Paz
     timeStartDays: 30
+    title: Niveles observados (estación automática) 
   corrientes:
     type: puntual
     seriesIdObs: 19
@@ -34,4 +63,5 @@ shortTerm:
     errorBandLow: inferior
     errorBandHigh: superior
     timeStartDays: 30
+    title: Pronóstico a Corto Plazo
   

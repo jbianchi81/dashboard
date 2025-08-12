@@ -100,8 +100,8 @@ const getAxisYDomain = (
 
 interface GraphState {
   data: HydroEntry[];
-  left: string;
-  right: string;
+  left: string | number;
+  right: string | number;
   refAreaLeft: number | "";
   refAreaRight: number | "";
   top: string;
@@ -109,6 +109,7 @@ interface GraphState {
   animation: boolean;
   pngProps: CurrentPngProps;
   height: number;
+  refLines: RefLines;
 }
 
 const initialState: GraphState = {
@@ -122,13 +123,29 @@ const initialState: GraphState = {
   animation: true,
   pngProps: [] as unknown as CurrentPngProps,
   height: 1,
+  refLines: {
+    bottom: 0.5,
+    low: 0.8,
+    up: 4.0,
+    top: 5.1
+  }
 };
+
+interface RefLines {
+  bottom: number | null;
+  low: number | null;
+  up: number | null;
+  top: number | null;
+}
 
 interface HydroChartProps {
   data: HydroEntry[];
   pngProps: CurrentPngProps;
   height: number;
   forecastDate: string;
+  refLines: RefLines;
+  timeStart? : Date;
+  timeEnd? : Date;
 }
 
 export function getPronosByQualifier(series : Serie[], qualifier : string) : Estimation[] {
@@ -155,6 +172,9 @@ export class HydroChart extends Component<HydroChartProps> {
     this.state.data = props.data;
     this.state.pngProps = props.pngProps;
     this.state.height = props.height;
+    this.state.refLines = (props.refLines) ? props.refLines : this.state.refLines
+    this.state.left = (props.timeStart) ? props.timeStart.getTime() : this.state.left 
+    this.state.left = (props.timeEnd) ? props.timeEnd.getTime() : this.state.left 
   }
 
   zoom() {
@@ -211,7 +231,7 @@ export class HydroChart extends Component<HydroChartProps> {
   };
 
   render() {
-    let { data, left, right, refAreaLeft, refAreaRight, top, bottom, height } =
+    let { data, left, right, refAreaLeft, refAreaRight, top, bottom, height, refLines } =
       this.state;
 
     // CSV creation
@@ -302,8 +322,8 @@ export class HydroChart extends Component<HydroChartProps> {
             <YAxis
               allowDataOverflow
               domain={[
-                (dmin: number) => dmin - 1,
-                (dmax: number) => Math.max(dmax + 1, 5.5),
+                (dmin: number) => Math.min(dmin - 1, (refLines.bottom !== null) ? refLines.bottom - 0.4 : dmin - 1),
+                (dmax: number) => Math.max(dmax + 1, (refLines.top !== null) ? refLines.top + 0.4 : dmax + 1),
               ]}
               type="number"
               yAxisId="1"
@@ -347,39 +367,38 @@ export class HydroChart extends Component<HydroChartProps> {
                 offset={20}
               />
             </ReferenceLine>
-            <ReferenceLine
-              y={0.8}
-              yAxisId="1"
-              stroke="#FFCB47"
-              strokeDasharray="15 3"
-            >
-              <Label position="insideBottom" fill="#014475" offset={20} />
-            </ReferenceLine>
-            <ReferenceLine
-              y={4}
-              yAxisId="1"
-              stroke="#FFCB47"
-              strokeDasharray="15 3"
-            >
-              <Label position="insideBottom" fill="#014475" offset={20} />
-            </ReferenceLine>
-            <ReferenceLine
-              y={0.5}
-              yAxisId="1"
-              stroke="#B80C09"
-              strokeDasharray="15 3"
-            >
-              <Label position="insideBottom" fill="#014475" offset={20} />
-            </ReferenceLine>
-            <ReferenceLine
-              y={5.1}
-              yAxisId="1"
-              stroke="#B80C09"
-              strokeDasharray="15 3"
-            >
-              <Label position="insideBottom" fill="#014475" offset={20} />
-            </ReferenceLine>
-
+            { refLines.low !== null && <ReferenceLine
+                y={refLines.low}
+                yAxisId="1"
+                stroke="#FFCB47"
+                strokeDasharray="15 3"
+              >
+                <Label position="insideBottom" fill="#014475" offset={20} />
+              </ReferenceLine> }
+            { refLines.up !== null && <ReferenceLine
+                y={refLines.up}
+                yAxisId="1"
+                stroke="#FFCB47"
+                strokeDasharray="15 3"
+              >
+                <Label position="insideBottom" fill="#014475" offset={20} />
+              </ReferenceLine> }
+            { refLines.bottom !== null && <ReferenceLine
+                y={refLines.bottom}
+                yAxisId="1"
+                stroke="#B80C09"
+                strokeDasharray="15 3"
+              >
+                <Label position="insideBottom" fill="#014475" offset={20} />
+              </ReferenceLine> }
+            { refLines.top !== null && <ReferenceLine
+                y={refLines.top}
+                yAxisId="1"
+                stroke="#B80C09"
+                strokeDasharray="15 3"
+              >
+                <Label position="insideBottom" fill="#014475" offset={20} />
+              </ReferenceLine> }
             <Legend
               width={170}
               layout="vertical"
@@ -465,6 +484,9 @@ export class HydroChart extends Component<HydroChartProps> {
     nextContext: any
   ): boolean {
     this.state.data = nextProps.data;
+    this.state.refLines = nextProps.refLines;
+    this.state.left = (nextProps.timeStart) ? nextProps.timeStart.getTime() : this.state.left;
+    this.state.right = (nextProps.timeEnd) ? nextProps.timeEnd.getTime() : this.state.right;
     return true;
   }
 }

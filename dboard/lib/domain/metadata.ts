@@ -6,6 +6,7 @@ type Metadata = {
   estacion: Station;
   var: Var;
   unidades: Units;
+  percentiles_ref: Record<number, number>;
 };
 
 export default Metadata;
