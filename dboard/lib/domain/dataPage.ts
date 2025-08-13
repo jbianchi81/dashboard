@@ -1,9 +1,16 @@
 import RefLines from './ref_lines'
 
-type Preset = {
+type DataPage = {
+    id: string
+    pageType: "serieObsConSim" | "meteorological"
     type: string
     seriesIdObs : number
     nombre_estacion : string
+    title? : string
+    icon?: string
+    iconWidth?: number
+    iconHeight?: number
+    itemIcon?: string
     calId? : number
     seriesIdSim? : number
     timeStartDays? : number
@@ -12,7 +19,6 @@ type Preset = {
     errorBandLow? : string
     errorBandHigh? : string
     refLines? : RefLines
-    title? : string
 };
 
-export default Preset;
+export default DataPage;

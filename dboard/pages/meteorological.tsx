@@ -4,8 +4,6 @@ import Box from "@mui/material/Box";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import moment from "moment";
-import { parseCookies } from "nookies";
-import { GetServerSidePropsContext } from "next";
 import { Button, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -22,43 +20,33 @@ import {
   buildWindEntries,
 } from "../components/windChart";
 import { CurrentPng } from "recharts-to-png";
+import RefLines from "@/lib/domain/ref_lines"
+import { pageGetServerSideProps } from "@/lib/sharedGetServerSideProps"
+import DataPage from "@/lib/domain/dataPage"
 
 const drawerWidth = 250;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const cookies = parseCookies(context);
-  const sessionToken = cookies.session;
-
-  if (process.env.skip_login !== "true" && !sessionToken) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      session: sessionToken,
-    },
-  };
-};
+export const getServerSideProps = pageGetServerSideProps;
 
 const sevenDaysAgo = moment().subtract(7, "d").toISOString();
 const now = moment().toISOString();
 const fifteenDaysFromNow = moment().add(15, "d").toISOString();
 
-export default function Meteorological() {
+export default function Meteorological({ pageConfig } : { pageConfig: DataPage }) {
   const [error, setError] = useState(false);
   const [hydroData, setHydroData] = useState([] as HydroEntry[]);
   const [windData, setWindData] = useState([] as WindEntry[]);
   const [hydroTimeStartObs_, setHydroTimeStartObs] = useState(sevenDaysAgo);
   const [hydroTimeEndObs_, setHydroTimeEndObs] = useState(now);
   const [forecastDate, setForecastDate] = useState("");
+  const initialRefLines : RefLines = {
+    bottom: (pageConfig.refLines) ? pageConfig.refLines.bottom : null,
+    low: (pageConfig.refLines) ? pageConfig.refLines.low : null,
+    up: (pageConfig.refLines) ? pageConfig.refLines.up : null,
+    top: (pageConfig.refLines) ? pageConfig.refLines.top : null
+  };
 
+  const [refLines, setRefLines] = useState<RefLines>(initialRefLines);
   async function getHydrometricHeightData(
     timeStartObs_: string,
     timeEndObs_: string
@@ -252,6 +240,8 @@ export default function Meteorological() {
                     height={400}
                     pngProps={props}
                     forecastDate={forecastDate}
+                    refLines={refLines}
+                    timeStart={new Date(hydroTimeStartObs_)}
                   />
                 )}
               </CurrentPng>

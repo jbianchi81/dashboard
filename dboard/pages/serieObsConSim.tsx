@@ -13,67 +13,34 @@ import { Button, Typography } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { parseCookies } from "nookies";
-import { GetServerSidePropsContext } from "next";
 import { CurrentPng } from "recharts-to-png";
 import { useRouter } from "next/router";
-import { getPageSet } from "../lib/pageSets";
-import DataPage from "@/lib/domain/dataPage";
+import DataPage from "@/lib/domain/dataPage"
 import RefLines from "@/lib/domain/ref_lines"
+import { pageGetServerSideProps } from "@/lib/sharedGetServerSideProps"
 
 const drawerWidth = 250;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const cookies = parseCookies(context);
-  const sessionToken = cookies.session;
+export const getServerSideProps = pageGetServerSideProps;
 
-  if (process.env.skip_login !== "true" && !sessionToken) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return {
-    props: {
-      session: sessionToken ?? null,
-      presets: getPageSet("shortTerm")
-    },
-  };
-};
-
-
-export default function ShortTerm({ presets } : { presets: Record<string, DataPage> }) {
+export default function SerieObsConSim({ pageConfig } : { pageConfig: DataPage }) {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
-  const router = useRouter();
-  const { preset_id } = router.query;
-  const preset_id_str = Array.isArray(preset_id) ? preset_id[0] : preset_id ?? "default"
-  if(!presets.hasOwnProperty(preset_id_str)) {
-    console.error({presets: presets})
-    throw new Error("Error: preset id not found: " + preset_id_str);
-  }
-  const preset = presets[preset_id_str]
-
-  const firstTimeStart = moment().subtract(preset.timeStartDays ?? 7, "d").toISOString();
-  const firstTimeEnd = moment().subtract(preset.timeEndDays ?? 0, "d").toISOString();
+  const firstTimeStart = moment().subtract(pageConfig.timeStartDays ?? 7, "d").toISOString();
+  const firstTimeEnd = moment().subtract(pageConfig.timeEndDays ?? 0, "d").toISOString();
   const [timeStartObs_, setTimeStartObs] = useState(firstTimeStart);
   const [timeEndObs_, setTimeEndObs] = useState(firstTimeEnd);
   const [forecastDate, setForecastDate] = useState("");
   const initialRefLines : RefLines = {
-    bottom: (preset.refLines) ? preset.refLines.bottom : null,
-    low: (preset.refLines) ? preset.refLines.low : null,
-    up: (preset.refLines) ? preset.refLines.up : null,
-    top: (preset.refLines) ? preset.refLines.top : null
+    bottom: (pageConfig.refLines) ? pageConfig.refLines.bottom : null,
+    low: (pageConfig.refLines) ? pageConfig.refLines.low : null,
+    up: (pageConfig.refLines) ? pageConfig.refLines.up : null,
+    top: (pageConfig.refLines) ? pageConfig.refLines.top : null
   };
   const [refLines, setRefLines] = useState<RefLines>(initialRefLines);
-  const [title, setTitle] = useState(preset.title ?? "");
+  const [title, setTitle] = useState(pageConfig.title ?? "");
   const [nombre_variable, setNombreVariable] = useState("Altura hidrométrica")
-  const [nombre_estacion, setNombreEstacion] = useState(preset.nombre_estacion)
+  const [nombre_estacion, setNombreEstacion] = useState(pageConfig.nombre_estacion)
 
   function setCustomRefLines(percentiles_ref : Record<number, number>) {
     setRefLines({
@@ -89,10 +56,10 @@ export default function ShortTerm({ presets } : { presets: Record<string, DataPa
     timeEndObs_: string
   ) {
     const params = {
-      type: preset.type,
-      seriesIdObs: preset.seriesIdObs,
-      calId: preset.calId,
-      seriesIdSim: preset.seriesIdSim,
+      type: pageConfig.type,
+      seriesIdObs: pageConfig.seriesIdObs,
+      calId: pageConfig.calId,
+      seriesIdSim: pageConfig.seriesIdSim,
       timeStartObs: timeStartObs_,
       timeEndObs: timeEndObs_,
       timeStartSim: "",
@@ -140,10 +107,10 @@ export default function ShortTerm({ presets } : { presets: Record<string, DataPa
     }
     if(result.simulation) {
       const entries = buildHydroEntries(
-        getPronosByQualifier(result.simulation.series, preset.mainQualifier ?? "main"),
+        getPronosByQualifier(result.simulation.series, pageConfig.mainQualifier ?? "main"),
         result.observations,
-        getPronosByQualifier(result.simulation.series, preset.errorBandLow ?? "error_band_01"),
-        getPronosByQualifier(result.simulation.series, preset.errorBandHigh ?? "error_band_99")
+        getPronosByQualifier(result.simulation.series, pageConfig.errorBandLow ?? "error_band_01"),
+        getPronosByQualifier(result.simulation.series, pageConfig.errorBandHigh ?? "error_band_99")
       );
       setData(entries);
       setForecastDate(result.simulation.forecast_date);
