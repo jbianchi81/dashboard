@@ -23,6 +23,7 @@ import { CurrentPng } from "recharts-to-png";
 import RefLines from "@/lib/domain/ref_lines"
 import { pageGetServerSideProps } from "@/lib/sharedGetServerSideProps"
 import DataPage from "@/lib/domain/dataPage"
+import DataPageSet from "@/lib/domain/dataPageSet";
 
 const drawerWidth = 250;
 
@@ -32,7 +33,7 @@ const sevenDaysAgo = moment().subtract(7, "d").toISOString();
 const now = moment().toISOString();
 const fifteenDaysFromNow = moment().add(15, "d").toISOString();
 
-export default function Meteorological({ pageConfig } : { pageConfig: DataPage }) {
+export default function Meteorological({ pageConfig, pageSet } : { pageConfig: DataPage, pageSet: DataPageSet }) {
   const [error, setError] = useState(false);
   const [hydroData, setHydroData] = useState([] as HydroEntry[]);
   const [windData, setWindData] = useState([] as WindEntry[]);
@@ -157,7 +158,7 @@ export default function Meteorological({ pageConfig } : { pageConfig: DataPage }
 
   return (
     <>
-      <DrawerMenu />
+      <DrawerMenu pageSet={pageSet} />
       <Box
         sx={{
           display: "flex",

@@ -20,10 +20,23 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/router";
+// import { sharedGetServerSideProps } from "@/lib/sharedGetServerSideProps";
+import DataPageSet from "@/lib/domain/dataPageSet";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
+import { SvgIconTypeMap } from "@mui/material";
+
+const iconTagMap : Record<string, OverridableComponent<SvgIconTypeMap<{}, "svg">>> = {
+  KeyboardArrowRightIcon: KeyboardArrowRightIcon,
+  KeyboardDoubleArrowRightIcon: KeyboardDoubleArrowRightIcon,
+  ArrowBackIcon: ArrowBackIcon,
+  ThermostatIcon: ThermostatIcon  
+} 
 
 const drawerWidth = 250;
 
-export default function ResponsiveDrawer() {
+// export const getServerSideProps = sharedGetServerSideProps;
+
+export default function ResponsiveDrawer({ pageSet } : { pageSet: DataPageSet}) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const router = useRouter();
@@ -88,67 +101,32 @@ export default function ResponsiveDrawer() {
             </ListItemButton>
           </ListItem>
         </Link>
-        <Link
-          href={"/shortTerm"}
-          style={{
-            textDecoration: "none",
-            color: "#EDEDED",
-          }}
-        >
-          <ListItem key={"short"} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <KeyboardArrowRightIcon
-                  sx={{ fontSize: 25, color: "#EDEDED" }}
-                />
-                <ListItemText
-                  primary={"Pronóstico a Corto Plazo"}
-                  sx={{ color: "#EDEDED", ml: 1 }}
-                />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        <Link
-          href={"/longTerm"}
-          style={{
-            textDecoration: "none",
-            color: "#EDEDED",
-          }}
-        >
-          <ListItem key={"long"} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <KeyboardDoubleArrowRightIcon
-                  sx={{ fontSize: 25, color: "#EDEDED" }}
-                />
-                <ListItemText
-                  primary={"Pronóstico a Largo Plazo"}
-                  sx={{ color: "#EDEDED", ml: 1 }}
-                />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-        </Link>
-        <Link
-          href={"/meteorological"}
-          style={{
-            textDecoration: "none",
-            color: "#EDEDED",
-          }}
-        >
-          <ListItem key={"meteo"} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <ThermostatIcon sx={{ fontSize: 25, color: "#EDEDED" }} />
-                <ListItemText
-                  primary={"Pronóstico Meteorológico"}
-                  sx={{ color: "#EDEDED", ml: 1 }}
-                />
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-        </Link>
+        {pageSet.pages.map((pageConfig, i) =>  {
+          const IconTag = iconTagMap[pageConfig.itemIcon ?? "KeyboardArrowRightIcon"]
+          return (
+            <Link
+              href={`/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`}
+              style={{
+                textDecoration: "none",
+                color: "#EDEDED",
+              }}
+            >
+              <ListItem key={pageConfig.id} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <IconTag
+                      sx={{ fontSize: 25, color: "#EDEDED" }}
+                    />
+                    <ListItemText
+                      primary={pageConfig.title ?? pageConfig.id}
+                      sx={{ color: "#EDEDED", ml: 1 }}
+                    />
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
+            </Link>
+          )
+        })}
         <ListItem key={"logout"} disablePadding>
           <ListItemButton onClick={logOut}>
             <ListItemIcon>

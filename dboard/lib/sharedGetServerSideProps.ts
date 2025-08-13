@@ -1,6 +1,5 @@
 import { GetServerSidePropsContext } from "next";
 import { parseCookies } from "nookies";
-import { getPageSet } from "../lib/pageSets";
 import DataPageSet from "../lib/domain/dataPageSet";
 import DataPage from "../lib/domain/dataPage"
 
@@ -25,9 +24,11 @@ export const sharedGetServerSideProps = async (
     };
   }
 
+  const { getPageSet } = await import("../lib/pageSets");
+
   const { pageset } = context.query;
   const pageset_str = Array.isArray(pageset) ? pageset[0] : pageset ?? "default"
-  const pageSet = getPageSet(pageset_str)
+  const pageSet = await getPageSet(pageset_str)
   return {
     props: {
       session: sessionToken ?? null,

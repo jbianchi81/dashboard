@@ -1,12 +1,11 @@
 // lib/config.ts
-import fs from "fs";
 import path from "path";
 import yaml from "js-yaml";
 import DataPageSet from "./domain/dataPageSet";
-
 // let cachedConfig: any = null;
 
-export function getPageSet(configKey : string) : DataPageSet {
+export async function getPageSet(configKey : string) : Promise<DataPageSet> {
+  const fs = await import("fs")
   // if (cachedConfig) return cachedConfig;
   const filePath = path.join(process.cwd(), "config", `${configKey}.yml`);
   try {

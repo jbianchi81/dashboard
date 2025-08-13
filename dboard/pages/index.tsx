@@ -15,7 +15,7 @@ export const getServerSideProps = sharedGetServerSideProps;
 export default function Home({ pageSet } : { pageSet: DataPageSet}) {
   return (
     <>
-      <DrawerMenu />
+      <DrawerMenu pageSet={pageSet} />
       <Box
         sx={{
           display: "flex",

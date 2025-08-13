@@ -18,12 +18,13 @@ import { useRouter } from "next/router";
 import DataPage from "@/lib/domain/dataPage"
 import RefLines from "@/lib/domain/ref_lines"
 import { pageGetServerSideProps } from "@/lib/sharedGetServerSideProps"
+import DataPageSet from "@/lib/domain/dataPageSet";
 
 const drawerWidth = 250;
 
 export const getServerSideProps = pageGetServerSideProps;
 
-export default function SerieObsConSim({ pageConfig } : { pageConfig: DataPage }) {
+export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: DataPage, pageSet: DataPageSet }) {
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
   const firstTimeStart = moment().subtract(pageConfig.timeStartDays ?? 7, "d").toISOString();
@@ -136,7 +137,7 @@ export default function SerieObsConSim({ pageConfig } : { pageConfig: DataPage }
 
   return (
     <>
-      <DrawerMenu />
+      <DrawerMenu pageSet={pageSet} />
       <Box
         sx={{
           display: "flex",

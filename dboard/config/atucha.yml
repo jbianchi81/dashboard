@@ -45,6 +45,7 @@ pages:
 - id: meteo
   pageType: meteorological
   icon: meteorological.png
+  itemIcon: ThermostatIcon
   iconWidth: 90
   iconHeight: 75
   title: Pronóstico Meteorológico

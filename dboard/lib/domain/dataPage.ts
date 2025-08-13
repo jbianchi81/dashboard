@@ -11,6 +11,7 @@ type DataPage = {
     iconWidth?: number
     iconHeight?: number
     itemIcon?: string
+    itemIconTag?: any
     calId? : number
     seriesIdSim? : number
     timeStartDays? : number
