@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../public/schemas/dashboard.schema.yml
 id: atucha
 pages:
 - id: shortTerm

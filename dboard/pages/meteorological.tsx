@@ -141,7 +141,8 @@ export default function Meteorological({ pageConfig, pageSet } : { pageConfig: D
       getPronosByQualifier(hydrometricResult.simulation.series,"main"),
       hydrometricResult.observations,
       getPronosByQualifier(hydrometricResult.simulation.series,"p05"),
-      getPronosByQualifier(hydrometricResult.simulation.series,"p95")
+      getPronosByQualifier(hydrometricResult.simulation.series,"p95"),
+      null
     );
     setHydroData(hydroEntries);
     const windEntries = buildWindEntries(

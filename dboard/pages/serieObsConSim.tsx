@@ -22,9 +22,24 @@ import DataPageSet from "@/lib/domain/dataPageSet";
 
 const drawerWidth = 250;
 
+interface GetDataParams {
+  type : string,
+  seriesIdObs : number,
+  calId?: number,
+  seriesIdSim?: number,
+  timeStartObs?: string,
+  timeEndObs?: string,
+  timeStartSim?: string,
+  timeEndSim?: string
+}
+
 export const getServerSideProps = pageGetServerSideProps;
 
 export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: DataPage, pageSet: DataPageSet }) {
+
+  const router = useRouter();
+  const { page } = router.query;
+
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
   const firstTimeStart = moment().subtract(pageConfig.timeStartDays ?? 7, "d").toISOString();
@@ -54,13 +69,15 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
 
   async function getHydrometricHeightData(
     timeStartObs_: string,
-    timeEndObs_: string
+    timeEndObs_: string,
+    params_ : GetDataParams | null
   ) {
+    const config_ = params_ ?? pageConfig
     const params = {
-      type: pageConfig.type,
-      seriesIdObs: pageConfig.seriesIdObs,
-      calId: pageConfig.calId,
-      seriesIdSim: pageConfig.seriesIdSim,
+      type: config_.type,
+      seriesIdObs: config_.seriesIdObs,
+      calId: config_.calId,
+      seriesIdSim: config_.seriesIdSim,
       timeStartObs: timeStartObs_,
       timeEndObs: timeEndObs_,
       timeStartSim: "",
@@ -98,42 +115,96 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
   }
 
   function handleDateChange() {
-    fetchData();
+    fetchData(null, null, null);
   }
 
-  async function fetchData() {
-    const result = await getHydrometricHeightData(timeStartObs_, timeEndObs_);
-    if (!result) {
+  async function fetchData(pageConfig_ : DataPage | null, timestart : string | null, timeend : string | null) {
+    pageConfig_ = pageConfig_ ?? pageConfig
+    timestart = timestart ?? timeStartObs_
+    timeend = timeend ?? timeEndObs_
+    const result_main = await getHydrometricHeightData(
+      timestart, 
+      timeend,  
+      {
+        type: pageConfig_.type,
+        seriesIdObs: pageConfig_.seriesIdObs,
+        calId: pageConfig_.calId,
+        seriesIdSim: pageConfig_.seriesIdSim
+      });
+    if (!result_main) {
       return;
     }
-    if(result.simulation) {
+    const results_aux = []
+    if(pageConfig_.seriesAuxiliares) {
+      for(const serieAuxiliar of pageConfig_.seriesAuxiliares) {
+        const result_aux = await getHydrometricHeightData(
+          timestart,
+          timeend,
+          {
+            type: serieAuxiliar.tipo,
+            seriesIdObs: serieAuxiliar.series_id
+          });
+          results_aux.push(result_aux.observations)
+      }
+    }
+    if(result_main.simulation) {
       const entries = buildHydroEntries(
-        getPronosByQualifier(result.simulation.series, pageConfig.mainQualifier ?? "main"),
-        result.observations,
-        getPronosByQualifier(result.simulation.series, pageConfig.errorBandLow ?? "error_band_01"),
-        getPronosByQualifier(result.simulation.series, pageConfig.errorBandHigh ?? "error_band_99")
+        getPronosByQualifier(result_main.simulation.series, pageConfig_.mainQualifier ?? "main"),
+        result_main.observations,
+        getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandLow ?? "error_band_01"),
+        getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandHigh ?? "error_band_99"),
+        results_aux
       );
       setData(entries);
-      setForecastDate(result.simulation.forecast_date);
+      setForecastDate(result_main.simulation.forecast_date);
     } else {
       const entries = buildHydroEntries(
         [],
-        result.observations,
+        result_main.observations,
         [],
-        []
+        [],
+        null
       );
       setData(entries);
     }
-    if(result.metadata.percentiles_ref) {
-      setCustomRefLines(result.metadata.percentiles_ref)
+    if(result_main.metadata.percentiles_ref) {
+      setCustomRefLines(result_main.metadata.percentiles_ref)
     }
-    setNombreVariable(result.metadata.var.nombre)
-    setNombreEstacion(result.metadata.estacion.nombre)
+    setNombreVariable(result_main.metadata.var.nombre)
+    setNombreEstacion(result_main.metadata.estacion.nombre)
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if(page) {
+      const page_index_int : number = Array.isArray(page) ? parseInt(page[0]) : parseInt(page)
+      if(page_index_int > pageSet.pages.length - 1) {
+        throw new Error("Error: page " + page_index_int + " not found in pageSet " + pageSet.id);
+      }
+      const pageConfig_ : DataPage = pageSet.pages[page_index_int]
+
+      const firstTimeStart = moment().subtract(pageConfig_.timeStartDays ?? 7, "d").toISOString();
+      const firstTimeEnd = moment().subtract(pageConfig_.timeEndDays ?? 0, "d").toISOString();
+      setTimeStartObs(firstTimeStart);
+      setTimeEndObs(firstTimeEnd);
+      const initialRefLines : RefLines = {
+        bottom: (pageConfig_.refLines) ? pageConfig_.refLines.bottom : null,
+        low: (pageConfig_.refLines) ? pageConfig_.refLines.low : null,
+        up: (pageConfig_.refLines) ? pageConfig_.refLines.up : null,
+        top: (pageConfig_.refLines) ? pageConfig_.refLines.top : null
+      };
+      setRefLines(initialRefLines);
+      if(pageConfig_.title) {
+        setTitle(pageConfig_.title);
+      }
+      setNombreVariable("Altura hidrométrica")
+      setNombreEstacion(pageConfig_.nombre_estacion)
+
+      fetchData(pageConfig_, firstTimeStart, firstTimeEnd)
+
+    } else {
+      fetchData(null, null, null);
+    }
+  }, [page]);
 
   return (
     <>

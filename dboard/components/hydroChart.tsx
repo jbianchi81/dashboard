@@ -26,6 +26,7 @@ export type HydroEntry = {
   observed: number | null;
   estimated: number | null;
   error_band: [number, number] | null;
+  aux: number[] | null;
 };
 
 type Estimation = { time: string; value: number };
@@ -35,7 +36,8 @@ export function buildHydroEntries(
   estimated: Estimation[],
   observations: Observation[],
   low_band: Estimation[],
-  high_band: Estimation[]
+  high_band: Estimation[],
+  series_auxiliares: Observation[][] | null
 ): HydroEntry[] {
   const est = _.groupBy(estimated, "time");
   const obs = _.groupBy(observations, "timestart");
@@ -55,6 +57,7 @@ export function buildHydroEntries(
       observed: obs[date]?.[0]?.valor || null,
       estimated: est[date]?.[0]?.value || null,
       error_band: [lo[date]?.[0]?.value, hi[date]?.[0]?.value],
+      aux: null
     };
     entries.push(entry);
   }
