@@ -12,7 +12,7 @@ export async function getPageSet(configKey : string) : Promise<DataPageSet> {
   const fs = await import("fs")
   // if (cachedConfig) return cachedConfig;
   const filePath = path.join(configPath, `${configKey}.yml`);
-  console.debug({configPath: configPath, filePath: filePath})
+  console.debug({env_config_path: process.env.CONFIG_PATH, configPath: configPath, filePath: filePath})
   try {
     var fileContents = fs.readFileSync(filePath, "utf8");
   } catch (e) {
