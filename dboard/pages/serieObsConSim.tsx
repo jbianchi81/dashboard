@@ -19,6 +19,8 @@ import DataPage from "@/lib/domain/dataPage"
 import RefLines from "@/lib/domain/ref_lines"
 import { pageGetServerSideProps } from "@/lib/sharedGetServerSideProps"
 import DataPageSet from "@/lib/domain/dataPageSet";
+import { HydrometricForecastResponse } from "./api/charts/getHydrometricForecast"
+import Metadata from "@/lib/domain/metadata"
 
 const drawerWidth = 250;
 
@@ -57,6 +59,7 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
   const [title, setTitle] = useState(pageConfig.title ?? "");
   const [nombre_variable, setNombreVariable] = useState("Altura hidrométrica")
   const [nombre_estacion, setNombreEstacion] = useState(pageConfig.nombre_estacion)
+  const [auxMetadata, setAuxMetadata] = useState<Metadata[]>([])
 
   function setCustomRefLines(percentiles_ref : Record<number, number>) {
     setRefLines({
@@ -71,7 +74,7 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
     timeStartObs_: string,
     timeEndObs_: string,
     params_ : GetDataParams | null
-  ) {
+  ) : Promise<HydrometricForecastResponse | undefined> {
     const config_ = params_ ?? pageConfig
     const params = {
       type: config_.type,
@@ -93,7 +96,7 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
         body: JSON.stringify(params),
       });
       if (response.status === 200) {
-        const result = await response.json();
+        const result : HydrometricForecastResponse = await response.json();
         return result;
       } else {
         setError(true);
@@ -144,16 +147,19 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
             type: serieAuxiliar.tipo,
             seriesIdObs: serieAuxiliar.series_id
           });
-          results_aux.push(result_aux.observations)
+          if(result_aux) {
+            results_aux.push(result_aux)
+          }
       }
     }
+    setAuxMetadata(results_aux.map(r=>r.metadata))
     if(result_main.simulation) {
       const entries = buildHydroEntries(
         getPronosByQualifier(result_main.simulation.series, pageConfig_.mainQualifier ?? "main"),
         result_main.observations,
         getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandLow ?? "error_band_01"),
         getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandHigh ?? "error_band_99"),
-        results_aux
+        results_aux.map(r => r.observations)
       );
       setData(entries);
       setForecastDate(result_main.simulation.forecast_date);
@@ -163,7 +169,7 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
         result_main.observations,
         [],
         [],
-        null
+        results_aux.map(r => r.observations)
       );
       setData(entries);
     }
@@ -286,6 +292,7 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
                   forecastDate={forecastDate}
                   refLines={{...refLines}}
                   timeStart={new Date(timeStartObs_)}
+                  auxColumns={auxMetadata.map(m => m.estacion.nombre)}
                 />
               )}
             </CurrentPng>

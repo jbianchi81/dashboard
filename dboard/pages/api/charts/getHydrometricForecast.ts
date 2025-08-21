@@ -151,7 +151,7 @@ function createObs(observation: ObservationsResponse) {
 function createForecast(seriesItem: SeriesItem) {
   seriesItem.series_id;
   const pronosticos = seriesItem.pronosticos.map((p) => {
-    const r: Forecast = { time: p.timestart, value: p.valor.toString(), qualifier: seriesItem.qualifier };
+    const r: Forecast = { time: p.timestart, value: parseFloat(p.valor.toString()), qualifier: seriesItem.qualifier };
     return r;
   });
   const ser: ModifSeriesItem = {
@@ -162,7 +162,7 @@ function createForecast(seriesItem: SeriesItem) {
   return ser;
 }
 
-type HydrometricForecastResponse = {
+export type HydrometricForecastResponse = {
   metadata: Metadata;
   observations: ObservationsResponse[];
   simulation?: ModifSimulationResponse;
@@ -197,6 +197,6 @@ type ModifSeriesItem = {
 
 type Forecast = {
   time: string;
-  value: string;
+  value: number;
   qualifier: string;
 };
