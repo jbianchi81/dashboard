@@ -28,7 +28,10 @@ export const sharedGetServerSideProps = async (
 
   const { pageset } = context.query;
   const pageset_str = Array.isArray(pageset) ? pageset[0] : pageset ?? "default"
-  const pageSet = await getPageSet(pageset_str)
+  const proto = context.req.headers["x-forwarded-proto"] as string ?? "http";
+  const baseUrl = `${proto}://${context.req.headers.host}`;
+  console.debug({pageset_str:pageset_str, baseUrl: baseUrl})
+  const pageSet = await getPageSet(pageset_str, baseUrl)
   return {
     props: {
       session: sessionToken ?? null,
