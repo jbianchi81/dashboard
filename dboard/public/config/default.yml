@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../public/schemas/dashboard.schema.yml
+id: atucha
+pages:
+- id: shortTerm
+  pageType: serieObsConSim 
+  title: Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 151
+  nombre_estacion: Atucha
+  calId: 489
+  seriesIdSim: 3403
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 0.5
+    low: 0.8
+    up: 4.0
+    top: 5.1
+- id: longTerm
+  pageType: serieObsConSim 
+  title: Pronóstico a Largo Plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 36030
+  nombre_estacion: Atucha
+  calId: 499
+  seriesIdSim: 35472
+  timeStartDays: 60
+  refLines:
+    bottom: 0.5
+    low: 0.8
+    up: 4.0
+    top: 5.1
+  mainQualifier: main
+  errorBandLow: p10
+  errorBandHigh: p90
+- id: meteo
+  pageType: meteorological
+  icon: meteorological.png
+  iconWidth: 90
+  iconHeight: 75
+  title: Pronóstico Meteorológico

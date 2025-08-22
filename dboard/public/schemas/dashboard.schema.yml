@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://alerta.ina.gob.ar/schemas/dashboard.schema.yml
+title: Dashboard configuration schema
+description: A schema that describes the configuration of hydrometeorologic monitoring dashboard
+type: object
+properties:
+  id:
+    type: string
+  pages:
+    description: Ordered list of pages of the dashboard
+    type: array
+    items:
+      type: object
+      properties:
+        id: 
+          type: string
+        pageType: 
+          enum:
+          - serieObsConSim
+          - meteorological
+        type: 
+          enum: 
+           - puntual
+           - areal
+           - raster
+        seriesIdObs:
+          type: number
+        nombre_estacion: 
+          type: string
+        title: 
+          type: string
+        icon: 
+          type: string
+        iconWidth: 
+          type: number
+        iconHeight: 
+          type: number
+        itemIcon:  
+          type: string
+        calId:  
+          type: number
+        seriesIdSim:  
+          type: number
+        timeStartDays:  
+          type: number
+        timeEndDays:  
+          type: number
+        mainQualifier:  
+          type: string
+        errorBandLow:  
+          type: string
+        errorBandHigh:  
+          type: string
+        refLines:  
+          type: object
+          properties:
+            bottom: 
+              type: number
+            low: 
+              type: number
+            up: 
+              type: number
+            top: 
+              type: number
+        seriesAuxiliares:
+          type: array
+          items:
+            type: object
+            properties:
+              tipo:
+                enum:
+                - puntual
+                - areal
+                - raster
+              series_id:
+                type: number
+      required:
+        - id
+        - pageType
+required:
+- id
+- pages

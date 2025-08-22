@@ -33,3 +33,15 @@
 6. La aplicación ya debería estar ejecutándose. Puede accederse a ella en `http://localhost:3000`.
 
 Nota: El puerto 3000 tiene que estar disponible en la máquina local. Para usar un puerto diferente, modificar el comando de ejecución.
+
+## Uso
+
+1. Cambiar pageset
+
+Introducir el nombre del pageset en la querystring:
+
+http://localhost:3000?pageset=parana_inferior
+
+2. Configurar nuevo pageset
+
+Crear un archivo YAML en la carpeta config/ de acuerdo al esquema descripto en public/schemas/dashboard.schema.yml

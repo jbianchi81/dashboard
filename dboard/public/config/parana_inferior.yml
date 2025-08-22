@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=../public/schemas/dashboard.schema.yml
+id: parana_inferior
+pages:
+- id: corrientes
+  pageType: serieObsConSim 
+  title: Corrientes - pronóstico
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 26261
+  nombre_estacion: Corrientes
+  calId: 289
+  seriesIdSim: 1540
+  mainQualifier: medio
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 26257
+  # - tipo: puntual
+  #   series_id: 26690
+  - tipo: puntual
+    series_id: 26297
+- id: goya
+  pageType: serieObsConSim 
+  title: Goya - pronóstico
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 26265
+  nombre_estacion: Goya
+  calId: 545
+  seriesIdSim: 35381
+  mainQualifier: main
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 26266

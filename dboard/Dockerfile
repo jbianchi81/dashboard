@@ -2,6 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+ENV CONFIG_PATH=/config
+
 COPY package*.json ./
 
 RUN npm ci
