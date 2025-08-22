@@ -44,4 +44,4 @@ http://localhost:3000?pageset=parana_inferior
 
 2. Configurar nuevo pageset
 
-Crear un archivo YAML en la carpeta config/ de acuerdo al esquema descripto en public/schemas/dashboard.schema.yml
+Crear un archivo YAML en la carpeta public/config de acuerdo al esquema descripto en public/schemas/dashboard.schema.yml
