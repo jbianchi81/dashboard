@@ -37,7 +37,7 @@ interface GetDataParams {
 
 export const getServerSideProps = pageGetServerSideProps;
 
-export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: DataPage, pageSet: DataPageSet }) {
+export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : { pageConfig: DataPage, pageSet: DataPageSet, pageSetIndex : string[] }) {
 
   const router = useRouter();
   const { page } = router.query;
@@ -222,7 +222,7 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
 
   return (
     <>
-      <DrawerMenu pageSet={pageSet} />
+      <DrawerMenu pageSet={pageSet} pageSetIndex={pageSetIndex}/>
       <Box
         sx={{
           display: "flex",

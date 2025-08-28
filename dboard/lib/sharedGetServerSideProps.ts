@@ -6,6 +6,7 @@ import DataPage from "../lib/domain/dataPage"
 type SharedServerSideProps = {
     session: string | null;
     pageSet: DataPageSet;
+    pageSetIndex: string[];
     pageConfig?: DataPage;
 }
 
@@ -24,7 +25,7 @@ export const sharedGetServerSideProps = async (
     };
   }
 
-  const { getPageSet } = await import("../lib/pageSets");
+  const { getPageSet, getPageSetIndex } = await import("../lib/pageSets");
 
   const { pageset } = context.query;
   const pageset_str = Array.isArray(pageset) ? pageset[0] : pageset ?? "default"
@@ -32,10 +33,12 @@ export const sharedGetServerSideProps = async (
   const baseUrl = `${proto}://${context.req.headers.host}`;
   console.debug({pageset_str:pageset_str, baseUrl: baseUrl})
   const pageSet = await getPageSet(pageset_str, baseUrl)
+  const pageSetTindex = await getPageSetIndex(baseUrl)
   return {
     props: {
       session: sessionToken ?? null,
-      pageSet: pageSet
+      pageSet: pageSet,
+      pageSetIndex: pageSetTindex
     },
   };
 };

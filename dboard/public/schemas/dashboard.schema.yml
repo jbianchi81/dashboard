@@ -7,6 +7,8 @@ type: object
 properties:
   id:
     type: string
+  title:
+    type: string
   pages:
     description: Ordered list of pages of the dashboard
     type: array
@@ -80,4 +82,5 @@ properties:
         - pageType
 required:
 - id
+- title
 - pages

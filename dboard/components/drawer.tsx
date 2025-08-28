@@ -24,6 +24,12 @@ import { useRouter } from "next/router";
 import DataPageSet from "@/lib/domain/dataPageSet";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const iconTagMap : Record<string, OverridableComponent<SvgIconTypeMap<{}, "svg">>> = {
   KeyboardArrowRightIcon: KeyboardArrowRightIcon,
@@ -36,7 +42,7 @@ const drawerWidth = 250;
 
 // export const getServerSideProps = sharedGetServerSideProps;
 
-export default function ResponsiveDrawer({ pageSet } : { pageSet: DataPageSet}) {
+export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: DataPageSet, pageSetIndex : string[]}) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
   const router = useRouter();
@@ -82,8 +88,24 @@ export default function ResponsiveDrawer({ pageSet } : { pageSet: DataPageSet}) 
         </IconButton>
       </Toolbar>
       <List>
+
+        <Accordion disableGutters elevation={0} square>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <ListItemText primary={pageSet.title} title="Haga click aquí para cambiar el pageset" />
+          </AccordionSummary>
+          <AccordionDetails sx={{ pl: 2 }}>
+            <List disablePadding>
+              {pageSetIndex.map(pageset_id => (
+                <ListItemButton component={Link} href={`/?pageset=${pageset_id}`}>
+                  <ListItemText primary={pageset_id} />
+                </ListItemButton>  
+              ))}
+            </List>
+          </AccordionDetails>
+        </Accordion>
+
         <Link
-          href="/"
+          href={`/?pageset=${pageSet.id}`}
           style={{
             textDecoration: "none",
             color: "#EDEDED",
@@ -127,6 +149,7 @@ export default function ResponsiveDrawer({ pageSet } : { pageSet: DataPageSet}) 
             </Link>
           )
         })}
+
         <ListItem key={"logout"} disablePadding>
           <ListItemButton onClick={logOut}>
             <ListItemIcon>

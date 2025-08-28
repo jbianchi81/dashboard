@@ -12,10 +12,10 @@ const drawerWidth = 250;
 
 export const getServerSideProps = sharedGetServerSideProps;
 
-export default function Home({ pageSet } : { pageSet: DataPageSet}) {
+export default function Home({ pageSet, pageSetIndex } : { pageSet: DataPageSet, pageSetIndex: string[]}) {
   return (
     <>
-      <DrawerMenu pageSet={pageSet} />
+      <DrawerMenu pageSet={pageSet} pageSetIndex={pageSetIndex} />
       <Box
         sx={{
           display: "flex",

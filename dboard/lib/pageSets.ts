@@ -9,6 +9,15 @@ import YAML from "yaml";
 //   ? path.resolve(process.cwd(), process.env.CONFIG_PATH) 
 //   : path.join(process.cwd(), "config");
 
+export async function getPageSetIndex(baseUrl : string) : Promise<string[]> {
+  const res = await fetch(`${baseUrl}/config/index.json`);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch pageset index: ${res.status}`);
+  }
+  const files = await res.json()
+  return files.map((f: string) => f.replace(/\.yml$/,""))
+}
+
 export async function getPageSet(configKey : string, baseUrl : string) : Promise<DataPageSet> {
   // const fs = await import("fs")
   // if (cachedConfig) return cachedConfig;

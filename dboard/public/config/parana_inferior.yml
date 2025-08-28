@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../schemas/dashboard.schema.yml
 id: parana_inferior
+title: Paraná inferior
 pages:
 - id: corrientes
   pageType: serieObsConSim 
