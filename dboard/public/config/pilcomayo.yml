@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=../schemas/dashboard.schema.yml
+id: pilcomayo
+pages:
+- id: la_paz
+  pageType: serieObsConSim 
+  title: La Paz
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 42293
+  nombre_estacion: La Paz
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 42291
+  - tipo: puntual
+    series_id: 42294

@@ -108,11 +108,19 @@ export default function SerieObsConSim({ pageConfig, pageSet } : { pageConfig: D
   }
 
   function handleSinceChange(e: any) {
+    if(e.$d.toString() == "Invalid Date") {
+      console.warn("Fecha inicial no válida")
+      return
+    }
     const date = e.$d.toISOString();
     setTimeStartObs(date);
   }
 
   function handleToChange(e: any) {
+    if(e.$d.toString() == "Invalid Date") {
+      console.warn("Fecha inicial no válida")
+      return
+    }
     const date = e.$d.toISOString();
     setTimeEndObs(date);
   }
