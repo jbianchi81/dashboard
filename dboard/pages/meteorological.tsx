@@ -33,7 +33,7 @@ const sevenDaysAgo = moment().subtract(7, "d").toISOString();
 const now = moment().toISOString();
 const fifteenDaysFromNow = moment().add(15, "d").toISOString();
 
-export default function Meteorological({ pageConfig, pageSet } : { pageConfig: DataPage, pageSet: DataPageSet }) {
+export default function Meteorological({ pageConfig, pageSet, pageSetIndex } : { pageConfig: DataPage, pageSet: DataPageSet, pageSetIndex : string[] }) {
   const [error, setError] = useState(false);
   const [hydroData, setHydroData] = useState([] as HydroEntry[]);
   const [windData, setWindData] = useState([] as WindEntry[]);
@@ -159,7 +159,7 @@ export default function Meteorological({ pageConfig, pageSet } : { pageConfig: D
 
   return (
     <>
-      <DrawerMenu pageSet={pageSet} />
+      <DrawerMenu pageSet={pageSet} pageSetIndex={pageSetIndex}/>
       <Box
         sx={{
           display: "flex",
