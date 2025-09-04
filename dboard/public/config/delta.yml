@@ -1,0 +1,240 @@
+# yaml-language-server: $schema=../schemas/dashboard.schema.yml
+id: delta
+title: Delta
+pages:
+- id: caudales
+  pageType: serieObsConSim 
+  title: Paraná - Caudal
+  icon: waves.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: WaterIcon
+  type: puntual
+  seriesIdObs: 26626
+  nombre_estacion: Paraná
+  calId: 703
+  seriesIdSim: 30111
+  mainQualifier: main
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 60
+  # refLines:
+  #   bottom: 1.61
+  #   low: 2.5
+  #   up: 4.08
+  #   top: 5.53
+- id: parana_corto
+  pageType: serieObsConSim 
+  title: Paraná - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38466
+  nombre_estacion: Paraná - Túnel subfluvial
+  calId: 487
+  seriesIdSim: 31525
+  mainQualifier: main
+  # errorBandLow: error_band_01
+  # errorBandHigh: error_band_99
+  timeStartDays: 30
+  refLines:
+    bottom: 1.61
+    low: 2.5
+    up: 4.08
+    top: 5.53
+  seriesAuxiliares:
+    - series_id: 38690
+      tipo: puntual
+- id: parana_largo
+  pageType: serieObsConSim 
+  title: Paraná - Pronóstico a Largo Plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26238
+  nombre_estacion: Paraná
+  calId: 434
+  seriesIdSim: 26216
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 182
+  refLines:
+    bottom: 1.61
+    low: 2.5
+    up: 4.08
+    top: 5.53
+- id: rosario_corto
+  pageType: serieObsConSim 
+  title: Rosario - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38461
+  nombre_estacion: Rosario
+  calId: 489
+  seriesIdSim: 29542
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 0.5
+    low: 0.8
+    up: 4.0
+    top: 5.1
+- id: rosario_largo
+  pageType: serieObsConSim 
+  title: Rosario - Pronóstico a Largo Plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26243
+  nombre_estacion: Rosario
+  calId: 499
+  seriesIdSim: 34873
+  mainQualifier: main
+  errorBandLow: p10
+  errorBandHigh: p90
+  timeStartDays: 182
+- id: villa_constitucion_corto
+  pageType: serieObsConSim 
+  title: Villa Constitución - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38462
+  nombre_estacion: Villa Constitución
+  calId: 489
+  seriesIdSim: 29538
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 1.9
+    low: 1.9
+    up: 4.0
+    top: 4.5
+- id: san_nicolas_corto
+  pageType: serieObsConSim 
+  title: San Nicolás - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 36
+  nombre_estacion: San Nicolás
+  calId: 489
+  seriesIdSim: 3414
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 1.35
+    low: 1.35
+    up: 4.2
+    top: 5.0
+- id: atucha_corto
+  pageType: serieObsConSim 
+  title: Lima - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 151
+  nombre_estacion: Lima
+  calId: 489
+  seriesIdSim: 3403
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 0.5
+    low: 0.8
+    up: 4.0
+    top: 5.1
+- id: atucha_largo
+  pageType: serieObsConSim 
+  title: Lima - Pronóstico a Largo Plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 36030
+  nombre_estacion: :Lima
+  calId: 499
+  seriesIdSim: 35472
+  timeStartDays: 60
+  refLines:
+    bottom: 0.5
+    low: 0.8
+    up: 4.0
+    top: 5.1
+  mainQualifier: main
+  errorBandLow: p10
+  errorBandHigh: p90
+- id: zarate_corto
+  pageType: serieObsConSim 
+  title: Zárate - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38463
+  nombre_estacion: Zárate
+  calId: 489
+  seriesIdSim: 29534
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 0.3
+    low: 0.3
+    up: 2
+    top: 2.2
+- id: escobar_corto
+  pageType: serieObsConSim 
+  title: Escobar - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 42
+  nombre_estacion: Escobar
+  calId: 489
+  seriesIdSim: 3398
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 0.2
+    low: 0.2
+    up: 3.0
+    top: 3.5
+- id: meteo
+  pageType: meteorological
+  icon: meteorological.png
+  itemIcon: ThermostatIcon
+  iconWidth: 90
+  iconHeight: 75
+  title: Pronóstico Meteorológico

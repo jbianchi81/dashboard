@@ -6,6 +6,7 @@ import Drawer from "@mui/material/Drawer";
 import Link from "next/link";
 import List from "@mui/material/List";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
+import WaterIcon from "@mui/icons-material/Water";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
@@ -35,7 +36,8 @@ const iconTagMap : Record<string, OverridableComponent<SvgIconTypeMap<{}, "svg">
   KeyboardArrowRightIcon: KeyboardArrowRightIcon,
   KeyboardDoubleArrowRightIcon: KeyboardDoubleArrowRightIcon,
   ArrowBackIcon: ArrowBackIcon,
-  ThermostatIcon: ThermostatIcon  
+  ThermostatIcon: ThermostatIcon,
+  WaterIcon: WaterIcon
 } 
 
 const drawerWidth = 250;

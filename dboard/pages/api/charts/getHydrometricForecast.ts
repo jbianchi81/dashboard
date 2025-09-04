@@ -6,6 +6,7 @@ import Var from "@/lib/domain/var";
 import Units from "@/lib/domain/units";
 
 const token = process.env.token;
+const api_url = process.env.api_url ?? "https://alerta.ina.gob.ar/a6";
 
 export default async function getHydrometricForecast(
   req: NextApiRequest,
@@ -58,7 +59,7 @@ export default async function getHydrometricForecast(
 }
 
 async function getMetadata(type: string, seriesId: string): Promise<Metadata> {
-  const metaDataUrl = `https://alerta.ina.gob.ar/a6/obs/${type}/series/${seriesId}`;
+  const metaDataUrl = `${api_url}/obs/${type}/series/${seriesId}`;
   const response = await fetch(metaDataUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -71,11 +72,13 @@ async function getObservations(
   timestart: string,
   timeend: string
 ): Promise<[ObservationsResponse]> {
-  const obsUrl = `https://alerta.ina.gob.ar/a6/obs/${type}/series/${seriesId}/observaciones?timestart=${timestart}&timeend=${timeend}`;
+  const obsUrl = `${api_url}/obs/${type}/series/${seriesId}/observaciones?timestart=${timestart}&timeend=${timeend}`;
   const response = await fetch(obsUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
-  return await response.json();
+  const observations = await response.json();
+  console.debug("fetched obs length: " + observations.length)
+  return observations;
 }
 
 async function getSimulation(
@@ -84,7 +87,7 @@ async function getSimulation(
   timestart: string,
   timeend: string
 ): Promise<SimulationResponse> {
-  const simUrl = `https://alerta.ina.gob.ar/a6/sim/calibrados/${calId}/corridas/last?series_id=${seriesId}&timestart=${timestart}&timeend=${timeend}&includeProno=true&group_by_qualifier=true`;
+  const simUrl = `${api_url}/sim/calibrados/${calId}/corridas/last?series_id=${seriesId}&timestart=${timestart}&timeend=${timeend}&includeProno=true&group_by_qualifier=true`;
   const response = await fetch(simUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });

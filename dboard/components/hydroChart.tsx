@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, FC } from "react";
 import Button from "@mui/material/Button";
 import {
   Area,
@@ -14,6 +14,8 @@ import {
   ComposedChart,
   ReferenceLine,
   Label,
+  DotProps,
+  Dot
 } from "recharts";
 import { CurrentPngProps } from "recharts-to-png";
 import FileSaver from "file-saver";
@@ -190,28 +192,27 @@ type Serie = {
 }
 
 const strokes : string[] = [
-  "#FF0000", // Red
-  "#00FF00", // Lime
-  "#0000FF", // Blue
-  "#FFFF00", // Yellow
-  "#00FFFF", // Cyan / Aqua
-  "#FF00FF", // Magenta / Fuchsia
-  "#C0C0C0", // Silver
-  "#808080", // Gray
-  "#800000", // Maroon
-  "#808000", // Olive
-  "#008000", // Green
-  "#800080", // Purple
-  "#008080", // Teal
-  "#000080", // Navy
-  "#FFA500", // Orange
-  "#FFC0CB", // Pink
-  "#D2691E", // Chocolate
-  "#F5DEB3", // Wheat
-  "#4B0082", // Indigo
-  "#ADD8E6", // LightBlue
-];
-
+  "rgba(255, 0, 0, 0.5)",     // Red
+  "rgba(0, 255, 0, 0.5)",     // Lime
+  "rgba(0, 0, 255, 0.5)",     // Blue
+  "rgba(255, 255, 0, 0.5)",   // Yellow
+  "rgba(0, 255, 255, 0.5)",   // Cyan / Aqua
+  "rgba(255, 0, 255, 0.5)",   // Magenta / Fuchsia
+  "rgba(192, 192, 192, 0.5)", // Silver
+  "rgba(128, 128, 128, 0.5)", // Gray
+  "rgba(128, 0, 0, 0.5)",     // Maroon
+  "rgba(128, 128, 0, 0.5)",   // Olive
+  "rgba(0, 128, 0, 0.5)",     // Green
+  "rgba(128, 0, 128, 0.5)",   // Purple
+  "rgba(0, 128, 128, 0.5)",   // Teal
+  "rgba(0, 0, 128, 0.5)",     // Navy
+  "rgba(255, 165, 0, 0.5)",   // Orange
+  "rgba(255, 192, 203, 0.5)", // Pink
+  "rgba(210, 105, 30, 0.5)",  // Chocolate
+  "rgba(245, 222, 179, 0.5)", // Wheat
+  "rgba(75, 0, 130, 0.5)",    // Indigo
+  "rgba(173, 216, 230, 0.5)", // LightBlue
+]
 
 export class HydroChart extends Component<HydroChartProps> {
   state: GraphState;
@@ -338,6 +339,13 @@ export class HydroChart extends Component<HydroChartProps> {
     const fdateLabel = `Fecha de emisión del pronóstico: ${new Date(
       fdate
     ).toLocaleString("en-GB")}`;
+
+    const RenderDot: FC<DotProps> = ({ cx, cy , fill, radius} : { cx? : number | undefined, cy?  : number  | undefined, fill? : string | undefined, radius? : string | number | undefined}) => {
+      return (
+        <Dot cx={cx} cy={cy} fill={fill ?? "red"} r={radius ? parseInt(radius.toString()) : 15} />
+      )
+    }
+
 
     return (
       <div
@@ -506,6 +514,8 @@ export class HydroChart extends Component<HydroChartProps> {
               stroke={strokes[i]}
               fill={strokes[i]}
               animationDuration={300}
+              shape={<RenderDot fill={strokes[i]} radius={3} />}
+              
             />
             ))}
           </ComposedChart>

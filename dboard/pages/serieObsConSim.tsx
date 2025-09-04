@@ -165,8 +165,8 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       const entries = buildHydroEntries(
         getPronosByQualifier(result_main.simulation.series, pageConfig_.mainQualifier ?? "main"),
         result_main.observations,
-        getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandLow ?? "error_band_01"),
-        getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandHigh ?? "error_band_99"),
+        pageConfig_.errorBandLow ? getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandLow) : [], //  ?? "error_band_01"
+        pageConfig_.errorBandHigh ? getPronosByQualifier(result_main.simulation.series, pageConfig_.errorBandHigh) : [], //  ?? "error_band_99"
         results_aux.map(r => r.observations)
       );
       setData(entries);
