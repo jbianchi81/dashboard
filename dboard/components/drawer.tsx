@@ -6,6 +6,7 @@ import Drawer from "@mui/material/Drawer";
 import Link from "next/link";
 import List from "@mui/material/List";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
+import WeatherWindyIcon from 'mdi-react/WeatherWindyIcon'
 import WaterIcon from "@mui/icons-material/Water";
 import LogoutIcon from "@mui/icons-material/Logout";
 import HomeIcon from "@mui/icons-material/Home";
@@ -31,13 +32,15 @@ import {
   AccordionDetails
 } from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { MdiReactIconComponentType } from "mdi-react";
 
-const iconTagMap : Record<string, OverridableComponent<SvgIconTypeMap<{}, "svg">>> = {
+const iconTagMap : Record<string, OverridableComponent<SvgIconTypeMap<{}, "svg">>|MdiReactIconComponentType> = {
   KeyboardArrowRightIcon: KeyboardArrowRightIcon,
   KeyboardDoubleArrowRightIcon: KeyboardDoubleArrowRightIcon,
   ArrowBackIcon: ArrowBackIcon,
   ThermostatIcon: ThermostatIcon,
-  WaterIcon: WaterIcon
+  WaterIcon: WaterIcon,
+  WeatherWindyIcon: WeatherWindyIcon
 } 
 
 const drawerWidth = 250;
@@ -79,7 +82,7 @@ export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: 
 
   const drawer = (
     <div
-      style={{ backgroundColor: "#01599b", height: "100%", color: "#EDEDED" }}
+      style={{ backgroundColor: "#01599b", height: "100%", color: "#EDEDED", overflow: "auto" }}
     >
       <Toolbar>
         <IconButton

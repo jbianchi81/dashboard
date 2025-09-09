@@ -20,7 +20,6 @@ properties:
         pageType: 
           enum:
           - serieObsConSim
-          - meteorological
         type: 
           enum: 
            - puntual
@@ -77,6 +76,23 @@ properties:
                 - raster
               series_id:
                 type: number
+        viento:
+          type: object
+          properties:
+            title:
+              type: string
+            image:
+              type: string
+            estacionId: 
+              type: number
+            seriesIdWindVel: 
+              type: number
+            seriesIdWindDir: 
+              type: number
+          required:
+          - estacionId
+          - seriesIdWindVel
+          - seriesIdWindDir
       required:
         - id
         - pageType

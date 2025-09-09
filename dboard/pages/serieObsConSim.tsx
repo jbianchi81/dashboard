@@ -2,6 +2,7 @@ import Alert from "@mui/material/Alert";
 import DrawerMenu from "../components/drawer";
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import moment from "moment";
 import {
   HydroChart,
@@ -21,7 +22,7 @@ import { pageGetServerSideProps } from "@/lib/sharedGetServerSideProps"
 import DataPageSet from "@/lib/domain/dataPageSet";
 import { HydrometricForecastResponse } from "./api/charts/getHydrometricForecast"
 import Metadata from "@/lib/domain/metadata"
-
+import { buildWindEntries, WindEntry, WindChart } from "@/components/windChart";
 const drawerWidth = 250;
 
 interface GetDataParams {
@@ -35,6 +36,12 @@ interface GetDataParams {
   timeEndSim?: string
 }
 
+interface GetWindParams {
+    estacionId: number
+    seriesIdWindVel: number
+    seriesIdWindDir: number
+}
+
 export const getServerSideProps = pageGetServerSideProps;
 
 export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : { pageConfig: DataPage, pageSet: DataPageSet, pageSetIndex : string[] }) {
@@ -44,6 +51,7 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
 
   const [error, setError] = useState(false);
   const [data, setData] = useState([] as HydroEntry[]);
+  const [windData, setWindData] = useState([] as WindEntry[]);
   const firstTimeStart = moment().subtract(pageConfig.timeStartDays ?? 7, "d").toISOString();
   const firstTimeEnd = moment().subtract(pageConfig.timeEndDays ?? 0, "d").toISOString();
   const [timeStartObs_, setTimeStartObs] = useState(firstTimeStart);
@@ -107,6 +115,44 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
     }
   }
 
+  async function getWindData(
+    timeStart_: string, 
+    timeEnd_: string,
+    params_: GetWindParams | null
+  ) {
+    const config = params_ ?? pageConfig.viento
+    if(!config) {
+      throw new Error("Faltan parámetros para gráfico de viento")
+    }
+    const params = {
+      type: "puntual",
+      estacionId: config.estacionId,
+      seriesIdWindVel: config.seriesIdWindVel,
+      seriesIdWindDir: config.seriesIdWindDir,
+      timeStart: timeStart_,
+      timeEnd: timeEnd_,
+    };
+    try {
+      const response = await fetch(`/api/charts/getWindForecast`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),
+      });
+      if (response.status === 200) {
+        const result = await response.json();
+        return result;
+      } else {
+        setError(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError(true);
+    }
+  }
+
   function handleSinceChange(e: any) {
     if(e.$d.toString() == "Invalid Date") {
       console.warn("Fecha inicial no válida")
@@ -160,6 +206,15 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
           }
       }
     }
+    if(pageConfig_.viento) {
+      var windResult = await getWindData(timestart, timeend, pageConfig_.viento);
+      const windEntries = buildWindEntries(
+        windResult.wind_direction_obs,
+        windResult.wind_velocity_obs
+      );
+      setWindData(windEntries);
+    }
+
     setAuxMetadata(results_aux.map(r=>r.metadata))
     if(result_main.simulation) {
       const entries = buildHydroEntries(
@@ -305,6 +360,42 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
               )}
             </CurrentPng>
           </Box>
+        )}
+        { !error && pageConfig.viento && (
+          <div>
+            <Typography
+              fontSize={{ lg: 20, sm: 15, xs: 15 }}
+              sx={{ ml: 5, mt: 5 }}
+            >
+              { pageConfig.viento.title ?? "Velocidad y dirección del viento" }
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                ml: 5,
+                mr: 5,
+                mt: 4,
+              }}
+            >
+              <CurrentPng>
+                {(props) => (
+                  <WindChart data={windData} pngProps={props} height={500} />
+                )}
+              </CurrentPng>
+              { pageConfig.viento.image && 
+                <Box sx={{ ml: 5, mt: 1 }}>
+                  <Image
+                    src={pageConfig.viento.image ?? "https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif"}
+                    width={400}
+                    height={450}
+                    alt="map"
+                  />
+                </Box>
+              }
+            </Box>
+          </div>
         )}
       </Box>
     </>

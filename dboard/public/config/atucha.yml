@@ -45,9 +45,31 @@ pages:
   errorBandLow: p10
   errorBandHigh: p90
 - id: meteo
-  pageType: meteorological
+  pageType: serieObsConSim 
+  title: Pronóstico Meteorológico del Río de la Plata
   icon: meteorological.png
-  itemIcon: ThermostatIcon
+  itemIcon: WeatherWindyIcon
   iconWidth: 90
   iconHeight: 75
-  title: Pronóstico Meteorológico
+  type: puntual
+  seriesIdObs: 52
+  nombre_estacion: San Fernando
+  calId: 432
+  seriesIdSim: 26202
+  mainQualifier: main
+  errorBandLow: p05
+  errorBandHigh: p95
+  timeStartDays: 7
+  viento:
+    title: Velocidad y dirección del viento en estación Pilote Norden
+    image: https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif
+    estacionId: 1740
+    seriesIdWindVel: 35478
+    seriesIdWindDir: 35479
+# - id: meteo
+#   pageType: meteorological
+#   icon: meteorological.png
+#   itemIcon: ThermostatIcon
+#   iconWidth: 90
+#   iconHeight: 75
+#   title: Pronóstico Meteorológico

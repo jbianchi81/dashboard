@@ -1,9 +1,17 @@
 import RefLines from './ref_lines'
 import SerieAuxiliar from './serieAuxiliar'
 
+interface VientoParams {
+    title?: string
+    image?: string
+    estacionId: number
+    seriesIdWindVel: number
+    seriesIdWindDir: number
+}
+
 type DataPage = {
     id: string
-    pageType: "serieObsConSim" | "meteorological"
+    pageType: "serieObsConSim"
     type: string
     seriesIdObs : number
     nombre_estacion : string
@@ -22,6 +30,7 @@ type DataPage = {
     errorBandHigh? : string
     refLines? : RefLines
     seriesAuxiliares?: SerieAuxiliar[]
+    viento?: VientoParams
 };
 
 export default DataPage;

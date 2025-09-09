@@ -231,13 +231,29 @@ pages:
     low: 0.2
     up: 3.0
     top: 3.5
-- id: san_fernando_corto
+# - id: san_fernando_corto
+#   pageType: serieObsConSim 
+#   title: San Fernando - Pronóstico a Corto Plazo
+#   icon: short-term.png
+#   iconWidth: 120
+#   iconHeight: 75
+#   itemIcon: KeyboardArrowRightIcon
+#   type: puntual
+#   seriesIdObs: 52
+#   nombre_estacion: San Fernando
+#   calId: 432
+#   seriesIdSim: 26202
+#   mainQualifier: main
+#   errorBandLow: p05
+#   errorBandHigh: p95
+#   timeStartDays: 7
+- id: meteo
   pageType: serieObsConSim 
   title: San Fernando - Pronóstico a Corto Plazo
-  icon: short-term.png
-  iconWidth: 120
+  icon: meteorological.png
+  itemIcon: WeatherWindyIcon
+  iconWidth: 90
   iconHeight: 75
-  itemIcon: KeyboardArrowRightIcon
   type: puntual
   seriesIdObs: 52
   nombre_estacion: San Fernando
@@ -247,10 +263,16 @@ pages:
   errorBandLow: p05
   errorBandHigh: p95
   timeStartDays: 7
-- id: meteo
-  pageType: meteorological
-  icon: meteorological.png
-  itemIcon: ThermostatIcon
-  iconWidth: 90
-  iconHeight: 75
-  title: Pronóstico Meteorológico
+  viento:
+    title: Velocidad y dirección del viento en estación Pilote Norden
+    image: https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif
+    estacionId: 1740
+    seriesIdWindVel: 35478
+    seriesIdWindDir: 35479
+# - id: meteo
+#   pageType: meteorological
+#   icon: meteorological.png
+#   itemIcon: ThermostatIcon
+#   iconWidth: 90
+#   iconHeight: 75
+#   title: Pronóstico Meteorológico
