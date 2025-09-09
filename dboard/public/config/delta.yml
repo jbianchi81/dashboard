@@ -33,11 +33,11 @@ pages:
   type: puntual
   seriesIdObs: 38466
   nombre_estacion: Paraná - Túnel subfluvial
-  calId: 487
-  seriesIdSim: 31525
-  mainQualifier: main
-  # errorBandLow: error_band_01
-  # errorBandHigh: error_band_99
+  calId: 289
+  seriesIdSim: 3408
+  mainQualifier: medio
+  errorBandLow: inferior
+  errorBandHigh: superior
   timeStartDays: 30
   refLines:
     bottom: 1.61
@@ -231,6 +231,22 @@ pages:
     low: 0.2
     up: 3.0
     top: 3.5
+- id: san_fernando_corto
+  pageType: serieObsConSim 
+  title: San Fernando - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 52
+  nombre_estacion: San Fernando
+  calId: 432
+  seriesIdSim: 26202
+  mainQualifier: main
+  errorBandLow: p05
+  errorBandHigh: p95
+  timeStartDays: 7
 - id: meteo
   pageType: meteorological
   icon: meteorological.png
