@@ -28,7 +28,7 @@ export const sharedGetServerSideProps = async (
   const { getPageSet, getPageSetIndex } = await import("../lib/pageSets");
 
   const { pageset } = context.query;
-  const pageset_str = Array.isArray(pageset) ? pageset[0] : pageset ?? "default"
+  const pageset_str = Array.isArray(pageset) ? pageset[0] : pageset ?? process.env.config_id ?? "default"
   const proto = context.req.headers["x-forwarded-proto"] as string ?? "http";
   const baseUrl = `${proto}://${context.req.headers.host}`;
   console.debug({pageset_str:pageset_str, baseUrl: baseUrl})

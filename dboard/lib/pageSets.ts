@@ -10,6 +10,9 @@ import YAML from "yaml";
 //   : path.join(process.cwd(), "config");
 
 export async function getPageSetIndex(baseUrl : string) : Promise<string[]> {
+  if( process.env.config_id ) {
+    return [process.env.config_id]
+  }
   const res = await fetch(`${baseUrl}/config/index.json`);
   if (!res.ok) {
     throw new Error(`Failed to fetch pageset index: ${res.status}`);
