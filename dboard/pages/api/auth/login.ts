@@ -3,7 +3,9 @@ import _ from "lodash";
 import { serialize } from "cookie";
 import { v4 as uuidv4 } from "uuid";
 
-const url = "https://alerta.ina.gob.ar/a6/login";
+const api_url = process.env.api_url || "https://alerta.ina.gob.ar/a6"
+
+const url = `${api_url}/login`;
 
 export default async function Login(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {

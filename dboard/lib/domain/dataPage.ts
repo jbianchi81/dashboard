@@ -7,6 +7,7 @@ interface VientoParams {
     estacionId: number
     seriesIdWindVel: number
     seriesIdWindDir: number
+    timeendDays?: number
 }
 
 type DataPage = {

@@ -43,7 +43,7 @@ export default function Login() {
       setLoading(true);
       const data = { user: userInput, password: passwordInput };
 
-      const authRequest = await fetch("/api/auth/login", {
+      const authRequest = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

@@ -69,7 +69,7 @@ export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: 
 
   async function logOut() {
     try {
-      const authRequest = await fetch("/api/auth/logout");
+      const authRequest = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/auth/logout`);
       if (authRequest.status == 200) {
         router.push("/login");
       } else {
@@ -132,7 +132,7 @@ export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: 
           const IconTag = iconTagMap[pageConfig.itemIcon ?? "KeyboardArrowRightIcon"]
           return (
             <Link
-              href={`/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`}
+              href={`/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`} // ${process.env.NEXT_PUBLIC_BASE_PATH || ''}
               style={{
                 textDecoration: "none",
                 color: "#EDEDED",

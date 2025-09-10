@@ -89,6 +89,8 @@ properties:
               type: number
             seriesIdWindDir: 
               type: number
+            timeendDays:
+              type: number
           required:
           - estacionId
           - seriesIdWindVel

@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import _ from "lodash";
 
 const token = process.env.token;
+const api_url = process.env.api_url ?? "https://alerta.ina.gob.ar/a6";
 
 export default async function getWindForecast(
   req: NextApiRequest,
@@ -79,7 +80,7 @@ async function getMetadata(
   type: string,
   estacionId: string
 ): Promise<StationMetadataResponse> {
-  const metaDataUrl = `https://alerta.ina.gob.ar/a6/obs/${type}/estaciones/${estacionId}?format=geojson`;
+  const metaDataUrl = `${api_url}/obs/${type}/estaciones/${estacionId}?format=geojson`;
   const response = await fetch(metaDataUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -92,7 +93,7 @@ async function getWindVelocityObs(
   timeStart: string,
   timeEnd: string
 ): Promise<[WindObservationResponse]> {
-  const windVelUrl = `https://alerta.ina.gob.ar/a6/obs/${type}/series/${seriesIdWindVel}/observaciones?timestart=${timeStart}&timeend=${timeEnd}`;
+  const windVelUrl = `${api_url}/obs/${type}/series/${seriesIdWindVel}/observaciones?timestart=${timeStart}&timeend=${timeEnd}`;
   const response = await fetch(windVelUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -105,7 +106,7 @@ async function getWindDirectionObs(
   timeStart: string,
   timeEnd: string
 ): Promise<[WindObservationResponse]> {
-  const windDirUrl = `https://alerta.ina.gob.ar/a6/obs/${type}/series/${seriesIdWindDir}/observaciones?timestart=${timeStart}&timeend=${timeEnd}`;
+  const windDirUrl = `${api_url}/obs/${type}/series/${seriesIdWindDir}/observaciones?timestart=${timeStart}&timeend=${timeEnd}`;
   const response = await fetch(windDirUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });

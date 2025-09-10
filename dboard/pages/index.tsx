@@ -44,7 +44,7 @@ export default function Home({ pageSet, pageSetIndex } : { pageSet: DataPageSet,
                   <Typography align="center" sx={{ mt: 2 }}>
                     <Button
                       id={pageConfig.id}
-                      href={`/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`}
+                      href={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`}
                       variant="contained"
                       size="large"
                     >

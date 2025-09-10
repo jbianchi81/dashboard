@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: true
 };
 const moduleExports = {
   nextConfig,
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   images: {
     remotePatterns: [
       {

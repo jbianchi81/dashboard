@@ -95,7 +95,7 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       timeEndSim: "",
     };
     try {
-      const response = await fetch(`/api/charts/getHydrometricForecast`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/charts/getHydrometricForecast`, {
         method: "POST",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -133,7 +133,7 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       timeEnd: timeEnd_,
     };
     try {
-      const response = await fetch(`/api/charts/getWindForecast`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/charts/getWindForecast`, {
         method: "POST",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -179,6 +179,9 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
     pageConfig_ = pageConfig_ ?? pageConfig
     timestart = timestart ?? timeStartObs_
     timeend = timeend ?? timeEndObs_
+    var timeend_wind = new Date(timeEndObs_)
+    timeend_wind.setDate(timeend_wind.getDate() + (pageConfig_.viento && pageConfig_.viento.timeendDays ? pageConfig_.viento.timeendDays : 15))
+    // console.debug({timestart, timeend, timeend_wind})
     const result_main = await getHydrometricHeightData(
       timestart, 
       timeend,  
@@ -207,7 +210,7 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       }
     }
     if(pageConfig_.viento) {
-      var windResult = await getWindData(timestart, timeend, pageConfig_.viento);
+      var windResult = await getWindData(timestart, timeend_wind.toISOString(), pageConfig_.viento);
       const windEntries = buildWindEntries(
         windResult.wind_direction_obs,
         windResult.wind_velocity_obs
