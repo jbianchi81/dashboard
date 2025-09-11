@@ -29,7 +29,11 @@
    ```
    config_id=mi_config
    ```
-   El archivo de configuración debe estar presente el la carpeta public/config, por ejemplo
+   También se puede fijar un subset de las configuraciones disponibles:
+   ```
+   config_id=mi_config;otra_config
+   ```
+   Los archivos de configuración deben estar presentes en la carpeta public/config, por ejemplo
    ```
    public/config/mi_config.yml
    ```
@@ -46,7 +50,7 @@
    ```
    docker run -p 3000:3000 dboard-app
    ```
-O desplegar en otro puerto
+   O desplegar en otro puerto
    ```
    docker run -p 3010:3010 -e PORT=3010 dboard-app
    ```
