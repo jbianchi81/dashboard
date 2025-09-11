@@ -11,7 +11,7 @@ import YAML from "yaml";
 
 export async function getPageSetIndex(baseUrl : string) : Promise<string[]> {
   if( process.env.config_id ) {
-    return [process.env.config_id]
+    return process.env.config_id.split(";")
   }
   console.debug({index_url: `${baseUrl}/config/index.json`})
   const res = await fetch(`${baseUrl}/config/index.json`);
