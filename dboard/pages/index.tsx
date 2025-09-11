@@ -36,10 +36,11 @@ export default function Home({ pageSet, pageSetIndex } : { pageSet: DataPageSet,
               >
                 <div>
                   <Image
-                    src={`/${pageConfig.icon ?? "short-term.png"}`}
+                    src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/${pageConfig.icon ?? "short-term.png"}`}
                     alt={pageConfig.id}
                     width={pageConfig.iconWidth ?? 120}
                     height={pageConfig.iconHeight ?? 75}
+                    unoptimized
                   ></Image>
                   <Typography align="center" sx={{ mt: 2 }}>
                     <Button
