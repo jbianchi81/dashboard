@@ -69,7 +69,9 @@ export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: 
 
   async function logOut() {
     try {
-      const authRequest = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/auth/logout`);
+      const logout_url = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/auth/logout`
+      console.debug({logout_url})
+      const authRequest = await fetch(logout_url);
       if (authRequest.status == 200) {
         router.push("/login");
       } else {

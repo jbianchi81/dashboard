@@ -13,6 +13,7 @@ export async function getPageSetIndex(baseUrl : string) : Promise<string[]> {
   if( process.env.config_id ) {
     return [process.env.config_id]
   }
+  console.debug({index_url: `${baseUrl}/config/index.json`})
   const res = await fetch(`${baseUrl}/config/index.json`);
   if (!res.ok) {
     throw new Error(`Failed to fetch pageset index: ${res.status}`);
@@ -24,6 +25,7 @@ export async function getPageSetIndex(baseUrl : string) : Promise<string[]> {
 export async function getPageSet(configKey : string, baseUrl : string) : Promise<DataPageSet> {
   // const fs = await import("fs")
   // if (cachedConfig) return cachedConfig;
+  console.debug({config_url: `${baseUrl}/config/${configKey}.yml`})
   const res = await fetch(`${baseUrl}/config/${configKey}.yml`);
   // const filePath = path.join(configPath, `${configKey}.yml`);
   // console.debug({env_config_path: process.env.CONFIG_PATH, configPath: configPath, filePath: filePath})

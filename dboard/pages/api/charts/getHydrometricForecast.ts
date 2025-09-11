@@ -60,6 +60,7 @@ export default async function getHydrometricForecast(
 
 async function getMetadata(type: string, seriesId: string): Promise<Metadata> {
   const metaDataUrl = `${api_url}/obs/${type}/series/${seriesId}`;
+  console.debug({metaDataUrl})
   const response = await fetch(metaDataUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -73,6 +74,7 @@ async function getObservations(
   timeend: string
 ): Promise<[ObservationsResponse]> {
   const obsUrl = `${api_url}/obs/${type}/series/${seriesId}/observaciones?timestart=${timestart}&timeend=${timeend}`;
+  console.debug({obsUrl})
   const response = await fetch(obsUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -88,6 +90,7 @@ async function getSimulation(
   timeend: string
 ): Promise<SimulationResponse> {
   const simUrl = `${api_url}/sim/calibrados/${calId}/corridas/last?series_id=${seriesId}&timestart=${timestart}&timeend=${timeend}&includeProno=true&group_by_qualifier=true`;
+  console.debug({simUrl})
   const response = await fetch(simUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });

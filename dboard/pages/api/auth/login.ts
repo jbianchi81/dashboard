@@ -20,7 +20,7 @@ export default async function Login(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    // console.debug({url})
+    console.debug({login_url: url + `?username=${user}&password=${password}`})
     const response = await fetch(
       url + `?username=${user}&password=${password}`,
       { method: "POST" }

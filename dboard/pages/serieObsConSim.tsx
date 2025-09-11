@@ -95,7 +95,9 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       timeEndSim: "",
     };
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/charts/getHydrometricForecast`, {
+      const obs_request_url = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/charts/getHydrometricForecast`
+      console.debug({request_url: obs_request_url})
+      const response = await fetch(obs_request_url, {
         method: "POST",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -133,7 +135,9 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       timeEnd: timeEnd_,
     };
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/charts/getWindForecast`, {
+      const wind_request_url = `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/api/charts/getWindForecast`
+      console.debug({wind_request_url})
+      const response = await fetch(wind_request_url, {
         method: "POST",
         headers: {
           Accept: "application/json, text/plain, */*",

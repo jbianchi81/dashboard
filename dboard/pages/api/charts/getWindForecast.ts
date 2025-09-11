@@ -81,6 +81,7 @@ async function getMetadata(
   estacionId: string
 ): Promise<StationMetadataResponse> {
   const metaDataUrl = `${api_url}/obs/${type}/estaciones/${estacionId}?format=geojson`;
+  console.debug({metaDataUrl})
   const response = await fetch(metaDataUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -94,6 +95,7 @@ async function getWindVelocityObs(
   timeEnd: string
 ): Promise<[WindObservationResponse]> {
   const windVelUrl = `${api_url}/obs/${type}/series/${seriesIdWindVel}/observaciones?timestart=${timeStart}&timeend=${timeEnd}`;
+  console.debug({windVelUrl})
   const response = await fetch(windVelUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
@@ -107,6 +109,7 @@ async function getWindDirectionObs(
   timeEnd: string
 ): Promise<[WindObservationResponse]> {
   const windDirUrl = `${api_url}/obs/${type}/series/${seriesIdWindDir}/observaciones?timestart=${timeStart}&timeend=${timeEnd}`;
+  console.debug({windDirUrl})
   const response = await fetch(windDirUrl, {
     headers: { Authorization: `Bearer ${token}` },
   });
