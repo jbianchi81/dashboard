@@ -2,10 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import _ from "lodash";
 import { serialize } from "cookie";
 
-const api_url = process.env.api_url || "https://alerta.ina.gob.ar/a6"
-
-const url = `${api_url}/logout`;
-
 export default async function LogOut(
   req: NextApiRequest,
   res: NextApiResponse

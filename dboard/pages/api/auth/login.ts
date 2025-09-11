@@ -3,7 +3,7 @@ import _ from "lodash";
 import { serialize } from "cookie";
 import { v4 as uuidv4 } from "uuid";
 
-const api_url = process.env.api_url || "https://alerta.ina.gob.ar/a6"
+const api_url = process.env.api_url ?? "https://alerta.ina.gob.ar/a6"
 
 const url = `${api_url}/login`;
 
@@ -20,6 +20,7 @@ export default async function Login(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
+    // console.debug({url})
     const response = await fetch(
       url + `?username=${user}&password=${password}`,
       { method: "POST" }
