@@ -33,14 +33,111 @@ pages:
   iconHeight: 75
   itemIcon: KeyboardArrowRightIcon
   type: puntual
-  seriesIdObs: 26265
+  seriesIdObs: 38520 # 26265
   nombre_estacion: Goya
-  calId: 545
-  seriesIdSim: 35381
-  mainQualifier: main
+  calId: 289
+  seriesIdSim: 3524
+  mainQualifier: medio
   errorBandLow: inferior
   errorBandHigh: superior
   timeStartDays: 30
   seriesAuxiliares:
   - tipo: puntual
     series_id: 26266
+  - tipo: puntual
+    series_id: 38469
+- id: lapaz
+  pageType: serieObsConSim 
+  title: La Paz - pronóstico
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38506
+  nombre_estacion: La Paz
+  calId: 289
+  seriesIdSim: 3527
+  mainQualifier: medio
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 25
+  - tipo: puntual
+    series_id: 38730
+- id: parana
+  pageType: serieObsConSim 
+  title: Paraná - pronóstico
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38466
+  nombre_estacion: Paraná
+  calId: 289
+  seriesIdSim: 3408
+  mainQualifier: medio
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 28
+  - tipo: puntual
+    series_id: 38807
+- id: santafe
+  pageType: serieObsConSim 
+  title: Santa Fe - pronóstico
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 30
+  nombre_estacion: Santa Fe
+  calId: 289
+  seriesIdSim: 1542
+  mainQualifier: medio
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 38690
+  - tipo: puntual
+    series_id: 38432
+  - tipo: puntual
+    series_id: 103
+- id: rosario
+  pageType: serieObsConSim 
+  title: Rosario - pronóstico
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 38461
+  nombre_estacion: Rosario
+  calId: 289
+  seriesIdSim: 3412
+  mainQualifier: medio
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 30
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 38467
+  - tipo: puntual
+    series_id: 32
+  - tipo: puntual
+    series_id: 38465
+  - tipo: puntual
+    series_id: 38332
+
+
+
+
+    

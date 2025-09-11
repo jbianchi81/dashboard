@@ -140,7 +140,7 @@ export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: 
                 color: "#EDEDED",
               }}
             >
-              <ListItem key={pageConfig.id} disablePadding>
+              <ListItem key={pageConfig.id} disablePadding title={pageConfig.title ?? pageConfig.id}>
                 <ListItemButton>
                   <ListItemIcon>
                     <IconTag
