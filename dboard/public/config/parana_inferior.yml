@@ -4,7 +4,7 @@ title: Paraná inferior
 pages:
 - id: corrientes
   pageType: serieObsConSim 
-  title: Corrientes - pronóstico
+  title: Corrientes
   icon: short-term.png
   iconWidth: 120
   iconHeight: 75
@@ -25,9 +25,30 @@ pages:
   #   series_id: 26690
   - tipo: puntual
     series_id: 26297
+- id: corrientes_caudal
+  pageType: serieObsConSim 
+  title: Corrientes - Caudal
+  icon: waves.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: WaterIcon
+  type: puntual
+  seriesIdObs: 26616
+  nombre_estacion: Corrientes
+  calId: 545
+  seriesIdSim: 30113
+  mainQualifier: main
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 60
+  seriesAuxiliares:
+    - tipo: puntual
+      series_id: 26652
+    - tipo: puntual
+      series_id: 26684
 - id: goya
   pageType: serieObsConSim 
-  title: Goya - pronóstico
+  title: Goya
   icon: short-term.png
   iconWidth: 120
   iconHeight: 75
@@ -48,7 +69,7 @@ pages:
     series_id: 38469
 - id: lapaz
   pageType: serieObsConSim 
-  title: La Paz - pronóstico
+  title: La Paz
   icon: short-term.png
   iconWidth: 120
   iconHeight: 75
@@ -69,7 +90,7 @@ pages:
     series_id: 38730
 - id: parana
   pageType: serieObsConSim 
-  title: Paraná - pronóstico
+  title: Paraná
   icon: short-term.png
   iconWidth: 120
   iconHeight: 75
@@ -88,9 +109,28 @@ pages:
     series_id: 28
   - tipo: puntual
     series_id: 38807
+- id: parana_caudal
+  pageType: serieObsConSim 
+  title: Paraná - Caudal
+  icon: waves.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: WaterIcon
+  type: puntual
+  seriesIdObs: 26626
+  nombre_estacion: Paraná
+  calId: 703
+  seriesIdSim: 30111
+  mainQualifier: main
+  errorBandLow: inferior
+  errorBandHigh: superior
+  timeStartDays: 60
+  seriesAuxiliares:
+    - tipo: puntual
+      series_id: 39606
 - id: santafe
   pageType: serieObsConSim 
-  title: Santa Fe - pronóstico
+  title: Santa Fe
   icon: short-term.png
   iconWidth: 120
   iconHeight: 75
@@ -113,7 +153,7 @@ pages:
     series_id: 103
 - id: rosario
   pageType: serieObsConSim 
-  title: Rosario - pronóstico
+  title: Rosario
   icon: short-term.png
   iconWidth: 120
   iconHeight: 75
@@ -136,6 +176,141 @@ pages:
     series_id: 38465
   - tipo: puntual
     series_id: 38332
+- id: corrientes_largo
+  pageType: serieObsConSim 
+  title: Corrientes - Largo plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26230
+  nombre_estacion: Corrientes
+  calId: 434
+  seriesIdSim: 26208
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 120
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 35344
+  - tipo: puntual
+    series_id: 35313
+- id: goya_largo
+  pageType: serieObsConSim 
+  title: Goya - Largo plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26234
+  nombre_estacion: Goya
+  calId: 434
+  seriesIdSim: 26212
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 120
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 26235
+  - tipo: puntual
+    series_id: 26232
+  - tipo: puntual
+    series_id: 26233
+- id: lapaz_largo
+  pageType: serieObsConSim 
+  title: La Paz - Largo plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26237
+  nombre_estacion: Goya
+  calId: 434
+  seriesIdSim: 26215
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 120
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 26236
+- id: parana_largo
+  pageType: serieObsConSim 
+  title: Paraná - Largo plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26238
+  nombre_estacion: Paraná
+  calId: 434
+  seriesIdSim: 26216
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 120
+  refLines:
+    bottom: 1.61
+    low: 2.5
+    up: 4.08
+    top: 5.53
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 35329
+  - tipo: puntual
+    series_id: 35330
+  - tipo: puntual
+    series_id: 26239
+- id: rosario_largo
+  pageType: serieObsConSim 
+  title: Rosario - Largo plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26243
+  nombre_estacion: Rosario
+  calId: 434
+  seriesIdSim: 26221
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 120
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 26240
+  - tipo: puntual
+    series_id: 26242
+- id: villa_constitucion_largo
+  pageType: serieObsConSim 
+  title: Villa Constitución - Largo plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26244
+  nombre_estacion: Villa Constitución
+  calId: 434
+  seriesIdSim: 26222
+  mainQualifier: main
+  errorBandLow: min
+  errorBandHigh: max
+  timeStartDays: 120
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 26245
+  - tipo: puntual
+    series_id: 26246
+  - tipo: puntual
+    series_id: 26227
 
 
 
