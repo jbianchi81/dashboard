@@ -66,6 +66,46 @@ pages:
     estacionId: 1740
     seriesIdWindVel: 35478
     seriesIdWindDir: 35479
+- id: rosario_corto
+  pageType: serieObsConSim 
+  title: Rosario - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 29435 # 38461
+  nombre_estacion: Rosario
+  calId: 489
+  seriesIdSim: 29542
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 0.5
+    low: 0.8
+    up: 4.0
+    top: 5.1
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 34
+- id: rosario_largo
+  pageType: serieObsConSim 
+  title: Rosario - Pronóstico a Largo Plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26243
+  nombre_estacion: Rosario
+  calId: 499
+  seriesIdSim: 34873
+  mainQualifier: main
+  errorBandLow: p10
+  errorBandHigh: p90
+  timeStartDays: 182
 # - id: meteo
 #   pageType: meteorological
 #   icon: meteorological.png
