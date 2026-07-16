@@ -243,7 +243,7 @@ export default function SerieObsConSim({ pageConfig, pageSet, pageSetIndex } : {
       );
       setData(entries);
     }
-    if(result_main.metadata.percentiles_ref) {
+    if(!pageConfig_.refLines && result_main.metadata.percentiles_ref) {
       setCustomRefLines(result_main.metadata.percentiles_ref)
     }
     setNombreVariable(result_main.metadata.var.nombre)
