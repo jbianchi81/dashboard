@@ -21,8 +21,8 @@ pages:
   refLines:
     bottom: 0.5
     low: 0.8
-    up: 4.0
-    top: 5.1
+    up: 4.5
+    top: 5.0
 - id: longTerm
   pageType: serieObsConSim 
   title: Pronóstico a Largo Plazo
@@ -39,8 +39,8 @@ pages:
   refLines:
     bottom: 0.5
     low: 0.8
-    up: 4.0
-    top: 5.1
+    up: 4.5
+    top: 5.0
   mainQualifier: main
   errorBandLow: p10
   errorBandHigh: p90
@@ -60,15 +60,66 @@ pages:
   errorBandLow: p05
   errorBandHigh: p95
   timeStartDays: 7
+  refLines:
+    bottom: 0.28
+    low: 0.33
+    up: 3
+    top: 3.5
   viento:
     title: Velocidad y dirección del viento en estación Pilote Norden
     image: https://alerta.ina.gob.ar/ina/51-GEFS_WAVE/gefs_wave/gefs.wave.last.gif
     estacionId: 1740
     seriesIdWindVel: 35478
     seriesIdWindDir: 35479
+- id: rosario_corto
+  pageType: serieObsConSim 
+  title: Rosario - Pronóstico a Corto Plazo
+  icon: short-term.png
+  iconWidth: 120
+  iconHeight: 75
+  itemIcon: KeyboardArrowRightIcon
+  type: puntual
+  seriesIdObs: 29435 # 38461
+  nombre_estacion: Rosario
+  calId: 489
+  seriesIdSim: 29542
+  mainQualifier: main
+  errorBandLow: error_band_01
+  errorBandHigh: error_band_99
+  timeStartDays: 7
+  refLines:
+    bottom: 1.45
+    low: 1.64
+    up: 5
+    top: 5.25
+  seriesAuxiliares:
+  - tipo: puntual
+    series_id: 34
+- id: rosario_largo
+  pageType: serieObsConSim 
+  title: Rosario - Pronóstico a Largo Plazo
+  icon: long-term.png
+  iconWidth: 225
+  iconHeight: 75
+  itemIcon: KeyboardDoubleArrowRightIcon
+  type: puntual
+  seriesIdObs: 26243
+  nombre_estacion: Rosario
+  calId: 499
+  seriesIdSim: 34873
+  mainQualifier: main
+  errorBandLow: p10
+  errorBandHigh: p90
+  timeStartDays: 182
+  refLines:
+    bottom: 1.45
+    low: 1.64
+    up: 5
+    top: 5.25
 # - id: meteo
 #   pageType: meteorological
 #   icon: meteorological.png
+#   itemIcon: ThermostatIcon
 #   iconWidth: 90
 #   iconHeight: 75
 #   title: Pronóstico Meteorológico
