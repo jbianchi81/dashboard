@@ -133,27 +133,33 @@ export default function ResponsiveDrawer({ pageSet, pageSetIndex } : { pageSet: 
         {pageSet.pages.map((pageConfig, i) =>  {
           const IconTag = iconTagMap[pageConfig.itemIcon ?? "KeyboardArrowRightIcon"]
           return (
-            <Link
-              href={`/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`} // ${process.env.NEXT_PUBLIC_BASE_PATH || ''}
-              style={{
-                textDecoration: "none",
-                color: "#EDEDED",
-              }}
+            <ListItem
+              key={pageConfig.id}
+              disablePadding
+              title={pageConfig.title ?? pageConfig.id}
             >
-              <ListItem key={pageConfig.id} disablePadding title={pageConfig.title ?? pageConfig.id}>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <IconTag
-                      sx={{ fontSize: 25, color: "#EDEDED" }}
-                    />
-                    <ListItemText
-                      primary={pageConfig.title ?? pageConfig.id}
-                      sx={{ color: "#EDEDED", ml: 1 }}
-                    />
-                  </ListItemIcon>
-                </ListItemButton>
-              </ListItem>
-            </Link>
+              <ListItemButton
+                component={Link}
+                href={`/${pageConfig.pageType}?pageset=${pageSet.id}&page=${i}`}
+                sx={{
+                  color: "#EDEDED",
+                  whiteSpace: "normal",
+                  overflowWrap: "anywhere",
+                }}
+              >
+                <ListItemIcon
+                  style={{ maxWidth: "100%"}}
+                >
+                  <IconTag
+                    sx={{ fontSize: 25, color: "#EDEDED" }}
+                  />
+                  <ListItemText
+                    primary={pageConfig.title ?? pageConfig.id}
+                    sx={{ color: "#EDEDED", ml: 1 }}
+                  />
+                </ListItemIcon>
+              </ListItemButton>
+            </ListItem>
           )
         })}
 
